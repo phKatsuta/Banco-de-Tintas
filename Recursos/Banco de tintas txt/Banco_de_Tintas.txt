@@ -1,0 +1,217 @@
+DROP DATABASE Banco_de_tintas;
+CREATE DATABASE Banco_de_Tintas;
+USE Banco_de_Tintas;
+
+-- Organizacao: Armazena informações básicas sobre organizações (doadoras ou receptoras).
+CREATE TABLE Organizacao(
+    cnpj char (14) NOT NULL PRIMARY KEY,
+    tipo_organizacao varchar (100),
+    area_atuacao varchar (100)
+);
+
+-- Doador e Recebedor: Detalha informações sobre entidades que doam ou recebem tintas, incluindo um relacionamento com a tabela Organizacao para identificar se são empresas.
+-- Doador_telefones e Recebedor_telefones: Armazenam múltiplos telefones para cada doador ou recebedor.
+CREATE TABLE Doador(
+    id_doador INT AUTO_INCREMENT PRIMARY KEY,
+    nome_doador varchar (100),
+    endereco_doador varchar (100),
+    email_doador varchar (100), -- Login
+    senha_hash VARCHAR(255), -- Login
+    eh_empresa TINYINT DEFAULT 0,
+    cnpj char (14),
+    FOREIGN KEY (cnpj) REFERENCES Organizacao (cnpj)
+);
+CREATE TABLE Doador_telefones (
+    id_doador INT,
+    telefone varchar (11),
+    PRIMARY KEY (id_doador, telefone),
+    FOREIGN KEY (id_doador) REFERENCES Doador (id_doador)
+);
+CREATE TABLE Recebedor(
+    id_recebedor INT AUTO_INCREMENT PRIMARY KEY,
+    nome_recebedor varchar (100),
+    endereco_recebedor varchar (100),
+    email_recebedor varchar (100), -- Login
+    senha_hash VARCHAR(255), -- Login
+    eh_empresa TINYINT DEFAULT 0,
+    cnpj char (14),
+    FOREIGN KEY (cnpj) REFERENCES Organizacao (cnpj)
+);
+CREATE TABLE Recebedor_telefones (
+    id_recebedor INT,
+    telefone varchar (11),
+    PRIMARY KEY (id_recebedor, telefone),
+    FOREIGN KEY (id_recebedor) REFERENCES Recebedor (id_recebedor)
+);
+
+-- Monitor: Registra informações sobre os monitores responsáveis pelo sistema, incluindo um relacionamento hierárquico de responsabilidade.
+-- Monitor_telefone: Armazena múltiplos telefones para cada monitor.
+CREATE TABLE Monitor (
+    id_monitor INT AUTO_INCREMENT PRIMARY KEY,
+    registro varchar (20),
+    nome_monitor varchar (100),
+    curso varchar (100),
+    email varchar (100), -- Login
+    senha_hash VARCHAR(255), -- Login
+    responsavel_por INT,
+    FOREIGN KEY (responsavel_por) REFERENCES Monitor (id_monitor)
+);
+CREATE TABLE Monitor_telefone(
+    id_monitor INT,
+    telefone varchar (11),
+    PRIMARY KEY (id_monitor, telefone),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor)
+);
+
+/*
+CREATE TABLE Telefones (
+    id_telefone INT AUTO_INCREMENT PRIMARY KEY,
+    id_entidade INT NOT NULL,
+    telefone VARCHAR(11) NOT NULL,
+    tipo_entidade ENUM('Doador', 'Recebedor', 'Monitor') NOT NULL,
+    UNIQUE (id_entidade, telefone, tipo_entidade),
+    CONSTRAINT fk_doador FOREIGN KEY (id_entidade) REFERENCES Doador(id_doador)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_recebedor FOREIGN KEY (id_entidade) REFERENCES Recebedor(id_recebedor)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_monitor FOREIGN KEY (id_entidade) REFERENCES Monitor(id_monitor)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+SELECT telefone 
+FROM Telefones 
+WHERE tipo_entidade = 'Doador' AND id_entidade = 1;
+*/
+
+-- Tintas: Contém informações sobre as tintas, incluindo data de validade e se a tinta é uma mistura.
+CREATE TABLE Tintas (
+    id_tintas INT AUTO_INCREMENT PRIMARY KEY,
+    nome_tintas varchar (20),
+    quantidade_tintas decimal(5,2), -- Medida em litros. Para medidas menores do que um litro, utilizar unidade decimal (0,7L = 700ml)
+    data_validade_tintas date NOT NULL,
+    mistura TINYINT NOT NULL DEFAULT 0,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Controle de inserção no banco de dados
+    excluido TINYINT DEFAULT 0, -- Soft delete. Se 1, significa que o pedido foi excluído, mas não removido do banco de dados
+    foto varchar (100) -- Armazenar o caminho da foto
+);
+-- Doacao: Registra as doações de tintas, relacionando doadores, monitores e tintas.
+CREATE TABLE Doacao (
+    id_doacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_doador INT,
+    id_monitor INT,
+    id_tintas INT,
+    data_doacao DATE,
+    quantidade_tintas decimal(5,2), -- Medida em litros. Para medidas menores do que um litro, utilizar unidade decimal (0,7L = 700ml)
+    FOREIGN KEY (id_doador) REFERENCES Doador (id_doador),
+    FOREIGN KEY (id_tintas) REFERENCES Tintas (id_tintas),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor)
+);
+-- Solicitacao: Registra a solicitação de retirada de tintas pelo Recebedor (sujeito a aprovação do gestor)
+CREATE TABLE Solicitacao (
+    id_solicitacao INT AUTO_INCREMENT,
+    id_recebedor INT,
+    id_tintas INT,
+    data_agendamento date NOT NULL DEFAULT CURDATE(),
+    quantidade_tintas decimal (5,2),
+    justificativa varchar (200),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Controle de criação da solicitação
+    excluido TINYINT DEFAULT 0, -- Soft delete. Se 1, significa que o pedido foi excluído, mas não removido do banco de dados
+    PRIMARY KEY (id_solicitacao, data_agendamento),
+    FOREIGN KEY (id_recebedor) REFERENCES Recebedor (id_recebedor),
+    FOREIGN KEY (id_tintas) REFERENCES Tintas (id_tintas)
+);
+-- Análise de Solicitacao: O Gestor analisa a Solicitação de retirada de tintas, decidindo se aprova ou não
+CREATE TABLE Analise (
+    id_analise INT AUTO_INCREMENT PRIMARY KEY,
+    id_monitor INT,
+    id_solicitacao INT,
+    status_solicitacao ENUM ('Em analise', 'Aprovado', 'Parcialmente aprovado', 'Negado'),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor),
+    FOREIGN KEY (id_solicitacao) REFERENCES Solicitacao (id_solicitacao)
+);
+-- Entrega: Registra as entregas de tintas, relacionando monitores, recebedores, tintas e o status da entrega.
+CREATE TABLE Entrega (
+    id_entrega INT AUTO_INCREMENT PRIMARY KEY,
+    id_solicitacao INT,
+    id_analise INT,
+    id_monitor INT,
+    id_recebedor INT,
+    id_tintas INT,
+    data_agendamento date,
+    data_entrega date,
+    quantidade_tintas decimal(5,2), -- Medida em litros. Para medidas menores do que um litro, utilizar unidade decimal (0,7L = 700ml)
+    status_entrega ENUM('agendada', 'concluida', 'cancelada'),
+    FOREIGN KEY (id_solicitacao, data_agendamento) REFERENCES Solicitacao (id_solicitacao, data_agendamento),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor),
+    FOREIGN KEY (id_recebedor) REFERENCES Recebedor (id_recebedor),
+    FOREIGN KEY (id_tintas) REFERENCES Tintas (id_tintas)
+);
+
+/*
+//Processo de segurança no PHP
+// Exemplo em PHP usando a biblioteca password_hash
+$senha = 'minhaSenhaSegura';
+$options = [
+    'cost' => 12, // Ajuste o custo para controlar a força do hash
+];
+$senha_hash = password_hash($senha, PASSWORD_DEFAULT, $options);
+
+// Inserir no banco de dados
+INSERT INTO Monitor (nome_monitor, senha_hash)
+VALUES ('João da Silva', '$senha_hash');
+
+// Verificação de senha no PHP
+// Recuperar o hash armazenado no banco de dados
+$hash_armazenado = // ...
+
+// Comparar o hash calculado com o hash armazenado
+if (password_verify($senha_informada, $hash_armazenado)) {
+    // Autenticação bem-sucedida
+} else {
+    // Autenticação falhou
+}
+*/
+-- Listar os Recebedores
+SELECT * FROM Recebedor;
+
+-- Verificação de Professores responsáveis por Monitores
+SELECT * FROM Monitor
+WHERE id_monitor IN (SELECT responsavel_por FROM Monitor WHERE responsavel_por IS NOT NULL);
+
+-- Relação entre tipo de organização e área de atuação
+SELECT tipo_organizacao, area_atuacao, COUNT(*) AS total
+FROM Organizacao
+GROUP BY tipo_organizacao, area_atuacao;
+
+-- Tintas próximas da validade nos últimos 30 dias
+SELECT * FROM Tintas
+WHERE data_validade_tintas BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
+
+-- Doações por período
+SELECT YEAR(data_entrega) AS ano, MONTH(data_entrega) AS mes, COUNT(*) AS total_doacoes
+FROM Entrega
+GROUP BY ano, mes
+ORDER BY ano, mes;
+
+-- Tipo de organização e área de atuação de Organizações que receberam tintas
+SELECT o.tipo_organizacao, o.area_atuacao, COUNT(*) AS total_recebedores
+FROM Recebedor r
+INNER JOIN Organizacao o ON r.cnpj = o.cnpj
+GROUP BY o.tipo_organizacao, o.area_atuacao;
+
+
+-- Índices
+CREATE INDEX idx_organizacao_tipo ON Organizacao (tipo_organizacao);
+CREATE INDEX idx_organizacao_area ON Organizacao (area_atuacao);
+
+CREATE INDEX idx_tintas_data_validade ON Tintas (data_validade_tintas);
+CREATE INDEX idx_tintas_nome ON Tintas (nome_tintas);
+
+CREATE INDEX idx_entrega_data_agendamento ON Entrega (data_agendamento);
+CREATE INDEX idx_entrega_data_entrega ON Entrega (data_entrega);
+CREATE INDEX idx_entrega_status ON Entrega (status_entrega);
+
+-- Doador anônimo
+INSERT INTO `doador` (`id_doador`, `nome_doador`, `endereco_doador`, `email_doador`, `senha_hash`, `eh_empresa`, `cnpj`) VALUES
+(1, 'Anonimo', NULL, 'anonimo@anonimo', 'anonimo', 0, NULL);
+

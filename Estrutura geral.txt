@@ -1,0 +1,79 @@
+Estrutura geral:
+/doacao
+	-doacao.php // Cadastro de doações
+	-processa_doacao.php
+/recebimento
+	-solicita.php // Cadastro de solicitações, também exibe tintas.php
+	-processa_solicita.php
+/cadastro
+	-usuario.php // acesso geral para criar login
+	-monitor.php // acesso exclusivo do Gestor para cadastrar Monitores
+	-gestor.php // acesso exclusivo do Administrador do sistema para cadastrar Gestores
+/CSS
+	-styles.css
+/gestao
+	-analise.php // acesso exclusivo do Gestor, para análise das solicitações
+	-tintas.php // acesso para monitoramento do estoque de tintas no sistema
+	-mistura_tinta.php // acesso exclusivo do Gestor, para realizar mistura de tintas no sistema
+	-entrega.php // acesso do Gestor e Monitor, para gestão de entregas
+	-doadores.php // controle dos doadores
+	-beneficiarios.php // controle dos beneficiários
+	-organizacao.php // controle de organizações doadoras e beneficiarias
+	-monitores.php // acesso exclusivo do Gestor para controle dos monitores
+	-regiao.php // controle de doações realizadas por região
+	
+/includes
+	-auth.php
+	-config.php // Dados de conexão
+	-via_cep.php // API ViaCEP
+	-function_buscarEnderecoViaCep.php // Função para busca de CEP
+/SCRIPT
+	-script.js // Funções gerais
+	-script_cadastrar.js // Funções para cadastro.php
+	-script_doacao.js // Funções para doação.php
+/templates
+	-header.php
+	-footer.php
+-index.php
+-login.php
+-banco_de_tintas.sql
+
+
+
+Gestor: 
+
+-gestao\cadastro_monitores.php
+
+-gestao\cadastro_doacoes.php
+
+-gestao\gestao_tintas.php
+
+-gestao\gestao_doadores.php
+
+-gestao\gestao_beneficiarios.php
+
+-gestao\gestao_solicitacoes.php
+
+-gestao\gestao_entregas.php
+
+
+
+Monitor:
+
+-gestao\cadastro_doacoes.php
+
+-gestao\gestao_entregas.php
+
+
+
+Doador:
+
+-doacao\cadastro_doacoes.php
+
+
+
+Beneficiario:
+
+-cadastro_solicitacoes.php
+
+-acompanhamento_solicitacoes.php

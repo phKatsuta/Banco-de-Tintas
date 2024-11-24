@@ -1,0 +1,29 @@
+alterar estimativa do recebimento das tintas
+
+criar tabela para alteração das tintas (quantidade, misturas)
+
+monitor insere:
+-cor
+-quantidade
+-relatórios
+--doação
+--quem
+--de onde
+
+pedidos parcialmente aprovados devido a disponibilidade
+-ex: solicita azul, verde, vermelho, mas só tem azul e verde disponível.
+
+Saci tintas = ponto de coleta
+pode receber com e sem cadastro (separar por recebimento da loja)
+3 lojas de coleta
+
+justificar a quantidade retirada (em grande volume)
+-O adm irá aprovar ou não
+
+
+FOCO:
+-login
+-cadastro
+
+
+pesquisar Docker

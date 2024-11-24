@@ -1,0 +1,83 @@
+O Universo "Banco de Tintas" é composto por Doador, cadastrado por nome completo, endereço, telefone e email. O Doador também pode ser uma Organização, acrescida de CNPJ, tipo de organização e área de atuação. 
+O Recebedor é cadastrado por nome completo, endereço, telefone, email, CADunico, a cor e quantidade de tinta a ser retirada.
+As tintas são cadastradas, no recebimento, por nome, quantidade e data de validade. Na retirada, elas possuem a informação se são ou não misturadas com outras tonalidades similares. As tintas são recebidas pelos Monitores, que são cadastrados por nome completo, RA e curso. O recebimento das tintas ocorre mediante horário disponível para retirada e a entrega ocorre mediante horário disponível para retirada, na qual é registrada a data de doação e qual a finalidade de uso.
+
+## Desenhando o Modelo de Banco de Dados para um Banco de Tintas
+
+**Análise dos Requisitos**
+
+Com base na descrição do seu projeto, podemos identificar as seguintes entidades e seus atributos:
+
+* **Doador:** nome completo, endereço, telefone, email, CNPJ (opcional para organizações), tipo de organização, área de atuação.
+* **Recebedor:** nome completo, endereço, telefone, email, CADunico, cor, quantidade.
+* **Tinta:** nome, quantidade, data de validade, misturada (booleano).
+* **Monitor:** nome completo, RA, curso.
+* **Recebimento:** horário disponível para retirada, data da doação, finalidade de uso.
+* **Entrega:** horário disponível para retirada.
+
+**Relacionamentos entre as Entidades**
+
+* Um **Doador** pode realizar várias **Doações**.
+* Um **Recebedor** pode realizar várias **Retiradas**.
+* Uma **Tinta** pode ser doada em várias **Doações**.
+* Um **Monitor** pode realizar várias **Recebimentos**.
+* Um **Recebimento** envolve um **Doador**, um **Recebedor**, uma ou mais **Tintas** e um **Monitor**.
+* Uma **Entrega** está associada a um **Recebimento**.
+
+**Diagrama Entidade-Relacionamento (DER)**
+
+[Image of an ER diagram representing the entities and relationships described above]
+
+**Tabelas do Banco de Dados**
+
+Com base no DER, podemos definir as seguintes tabelas:
+
+* **doador:** id_doador (PK), nome, endereco, telefone, email, cnpj, tipo_organizacao, area_atuacao
+* **recebedor:** id_recebedor (PK), nome, endereco, telefone, email, cadunico
+* **tinta:** id_tinta (PK), nome, quantidade, data_validade, misturada
+* **monitor:** id_monitor (PK), nome, ra, curso
+* **recebimento:** id_recebimento (PK), id_doador (FK), id_recebedor (FK), id_monitor (FK), horario_disponivel_retirada, data_doacao, finalidade_uso
+* **entrega:** id_entrega (PK), id_recebimento (FK), horario_disponivel_retirada
+
+**Tabela de Relacionamento**
+
+* **recebimento_tinta:** id_recebimento (FK), id_tinta (FK)
+
+**Considerações Adicionais**
+
+* **Chaves Primárias (PK):** Identificam de forma única cada registro em uma tabela.
+* **Chaves Estrangeiras (FK):** Estabelecem o relacionamento entre as tabelas.
+* **Normalização:** É importante normalizar o banco de dados para evitar redundância e inconsistências.
+* **Índices:** Crie índices nas colunas que serão frequentemente consultadas para melhorar o desempenho das consultas.
+* **Tipos de Dados:** Escolha os tipos de dados adequados para cada coluna (por exemplo, VARCHAR para texto, DATE para datas, INT para números inteiros).
+
+**Próximos Passos**
+
+* **Detalhamento das Tabelas:** Definir o tamanho dos campos, restrições (por exemplo, NOT NULL, UNIQUE), e outros detalhes específicos.
+* **Criação do Banco de Dados:** Escolher um sistema gerenciador de banco de dados (SGBD) como MySQL, PostgreSQL ou SQL Server e criar o banco de dados com as tabelas e relacionamentos definidos.
+* **Desenvolvimento da Aplicação:** Desenvolver a aplicação que irá interagir com o banco de dados, permitindo a inserção, atualização e consulta dos dados.
+
+**Observações:**
+
+* Este modelo é um ponto de partida e pode ser adaptado de acordo com as necessidades específicas do seu projeto.
+* É importante considerar a escalabilidade do banco de dados, pensando em um possível aumento no volume de dados.
+* A segurança dos dados é fundamental, especialmente quando se trata de informações pessoais. Implemente medidas de segurança adequadas para proteger os dados.
+
+**Precisa de mais ajuda?**
+
+Se precisar de mais detalhes ou tiver alguma dúvida, pode me perguntar! Podemos discutir sobre:
+
+* **Normalização:** Explicar os diferentes níveis de normalização e como aplicá-los.
+* **Índices:** Dicas para criar índices eficientes.
+* **Consultas SQL:** Como escrever consultas para recuperar os dados desejados.
+* **Triggers:** Como automatizar tarefas utilizando triggers.
+* **Visualização de Dados:** Ferramentas para visualizar e analisar os dados do banco de dados.
+
+**Gostaria de discutir algum desses pontos em mais detalhes?** 
+
+**Observação:** Para visualizar o diagrama ER, você pode utilizar ferramentas como o Lucidchart ou o Draw.io.
+
+**Qual SGBD você pretende utilizar?** 
+Com essa informação, posso te auxiliar na criação das tabelas e na escrita das consultas SQL.
+
+**Qualquer dúvida, estou à disposição!**

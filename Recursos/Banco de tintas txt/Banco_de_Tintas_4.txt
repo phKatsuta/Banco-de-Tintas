@@ -1,0 +1,427 @@
+DROP DATABASE Banco_de_Tintas_4;
+CREATE DATABASE Banco_de_Tintas_4;
+USE Banco_de_Tintas_4;
+
+-- Organizacao: Armazena informações básicas sobre organizações (doadoras ou receptoras).
+CREATE TABLE Organizacao(
+    cnpj char (14) NOT NULL PRIMARY KEY,
+    tipo_organizacao VARCHAR (100),
+    area_atuacao VARCHAR (100)
+);
+
+-- Doador e Beneficiario: Detalha informações sobre entidades que doam ou recebem tintas, incluindo um relacionamento com a tabela Organizacao para identificar se são empresas.
+-- Doador_telefones e Beneficiario_telefones: Armazenam múltiplos telefones para cada doador ou beneficiario.
+CREATE TABLE Doador(
+    id_doador INT AUTO_INCREMENT PRIMARY KEY,
+    nome_doador VARCHAR (100),
+    endereco_doador VARCHAR (100),
+    email_doador VARCHAR (100), -- Login
+    senha_hash VARCHAR(255), -- Login
+    eh_empresa TINYINT DEFAULT 0,
+    cnpj char (14),
+    FOREIGN KEY (cnpj) REFERENCES Organizacao (cnpj)
+);
+CREATE TABLE Doador_telefones (
+    id_doador INT,
+    telefone VARCHAR (11),
+    PRIMARY KEY (id_doador, telefone),
+    FOREIGN KEY (id_doador) REFERENCES Doador (id_doador)
+);
+CREATE TABLE Beneficiario(
+    id_beneficiario INT AUTO_INCREMENT PRIMARY KEY,
+    nome_beneficiario VARCHAR (100),
+    endereco_beneficiario VARCHAR (100),
+    email_beneficiario VARCHAR (100), -- Login
+    senha_hash VARCHAR(255), -- Login
+    eh_empresa TINYINT DEFAULT 0,
+    cnpj char (14),
+    FOREIGN KEY (cnpj) REFERENCES Organizacao (cnpj)
+);
+CREATE TABLE Beneficiario_telefones (
+    id_beneficiario INT,
+    telefone VARCHAR (11),
+    PRIMARY KEY (id_beneficiario, telefone),
+    FOREIGN KEY (id_beneficiario) REFERENCES Beneficiario (id_beneficiario)
+);
+
+-- Monitor: Registra informações sobre os monitores responsáveis pelo sistema, incluindo um relacionamento hierárquico de responsabilidade.
+-- Monitor_telefone: Armazena múltiplos telefones para cada monitor.
+CREATE TABLE Monitor (
+    id_monitor INT AUTO_INCREMENT PRIMARY KEY,
+    registro VARCHAR (20), -- RA do aluno ou código/cadastro do professor
+    nome_monitor VARCHAR (100),
+    curso VARCHAR (100),
+    email VARCHAR (100), -- Login
+    senha_hash VARCHAR(255), -- Login
+    gestor TINYINT DEFAULT 0
+);
+CREATE TABLE Monitor_telefone(
+    id_monitor INT,
+    telefone VARCHAR (11),
+    PRIMARY KEY (id_monitor, telefone),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor)
+);
+-- Responsavel_Monitor: Registra os Gestores (professores) responsáveis pelos monitores. Inseridos pelo ADM
+CREATE TABLE Responsavel_Monitor (
+    id_gestor INT,
+    id_monitor INT,
+    PRIMARY KEY (id_gestor, id_monitor),
+    FOREIGN KEY (id_gestor) REFERENCES Monitor (id_monitor),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor)
+);
+-- Tintas: Contém informações sobre as tintas, incluindo data de validade e se a tinta é uma mistura.
+CREATE TABLE Tintas (
+    id_tintas INT AUTO_INCREMENT PRIMARY KEY,
+    nome_tintas VARCHAR (20),
+    marca VARCHAR (50),
+    linha ENUM ('Premium', 'Standart', 'Econômica'),
+    acabamento ENUM ('Fosco', 'Acetinado', 'Brilhante'),
+    quantidade_tintas_disponivel decimal(5,2), -- Medida em litros. Para medidas menores do que um litro, utilizar unidade decimal (0,7L = 700ml)
+    data_validade_tintas date NOT NULL,
+    mistura TINYINT NOT NULL DEFAULT 0,
+    historico VARCHAR (200), -- Caso tenha havido mistura, informa quais tintas foram utilizadas
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Controle de inserção no banco de dados
+    excluido TINYINT DEFAULT 0, -- Soft delete. Se 1, significa que o item foi excluído, mas não removido do banco de dados
+    foto VARCHAR (100) -- Armazenar o caminho da foto
+);
+-- Doacao: Registra as doações de tintas, relacionando doadores, monitores e tintas.
+CREATE TABLE Doacao (
+    id_doacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_doador INT,
+    data_doacao TIMESTAMP,
+    local_doado ENUM ('Fatec', 'Posto de coleta'),
+    FOREIGN KEY (id_doador) REFERENCES Doador (id_doador)
+);
+-- Doacao_tintas: registra as tintas recebidas em Doação
+CREATE TABLE Doacao_tintas (
+    id_doacao INT,
+    id_tintas INT,
+    quantidade_tintas_doada decimal(5,2), -- Medida em litros. Para medidas menores do que um litro, utilizar unidade decimal (0,7L = 700ml)
+    PRIMARY KEY (id_doacao, id_tintas),
+    FOREIGN KEY (id_doacao) REFERENCES Doacao (id_doacao),
+    FOREIGN KEY (id_tintas) REFERENCES Tintas (id_tintas)
+
+);
+CREATE TABLE Recebe(
+    id_doacao INT,
+    id_monitor INT,
+    PRIMARY KEY (id_doacao, id_monitor),
+    FOREIGN KEY (id_doacao) REFERENCES Doacao (id_doacao),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor)
+);
+
+-- Solicitacao: Registra a solicitação de retirada de tintas pelo Beneficiario (sujeito a aprovação do gestor na tabela Analisa)
+CREATE TABLE Solicitacao (
+    id_solicitacao INT AUTO_INCREMENT,
+    id_beneficiario INT,
+    data_solicitacao TIMESTAMP, -- Indica quando a solicitação entrou no sistema
+    justificativa VARCHAR (200),
+    excluido TINYINT DEFAULT 0, -- Soft delete. Se 1, significa que a solicitação foi excluída, mas não removida do banco de dados. Funciona para verificar os pedidos recebidos
+    PRIMARY KEY (id_solicitacao, data_solicitacao),
+    FOREIGN KEY (id_beneficiario) REFERENCES Beneficiario (id_beneficiario)
+);
+-- Solicitacao_tintas: Registra as tintas da Solicitação do Beneficiario
+CREATE TABLE Solicitacao_tintas (
+    id_solicitacao INT,
+    id_tintas INT,
+    quantidade DECIMAL (5,2),
+    PRIMARY KEY (id_solicitacao, id_tintas),
+    FOREIGN KEY (id_solicitacao) REFERENCES Solicitacao (id_solicitacao),
+    FOREIGN KEY (id_tintas) REFERENCES Tintas (id_tintas)
+);
+-- Análise da Solicitação: O Gestor analisa a Solicitação de retirada de tintas, decidindo se aprova ou não. Caso haja indisponibilidade de determinada tinta no sistema ou outros casos (ex.: quantidade de tinta solicitada), o Gestor irá entrar em contato com o Beneficiario para combinar a situação)
+CREATE TABLE Analise (
+    id_analise INT AUTO_INCREMENT PRIMARY KEY,
+    id_monitor INT, -- Identificação do Gestor, responsável por outros monitores
+    id_solicitacao INT,
+    status_solicitacao ENUM ('Em analise', 'Aprovado', 'Parcialmente aprovado', 'Negado') NOT NULL DEFAULT 'Em analise',
+    justificativa VARCHAR(200), -- Motivo de não aprovar uma solicitação
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor),
+    FOREIGN KEY (id_solicitacao) REFERENCES Solicitacao (id_solicitacao)
+);
+-- Entrega: Registra as entregas de tintas, relacionando monitores, beneficiarios, tintas e o status da entrega. Pode ser preenchida na hora da retirada, mas não deve ser negligenciada.
+CREATE TABLE Entrega (
+    id_entrega INT AUTO_INCREMENT PRIMARY KEY,
+    id_analise INT,
+    id_solicitacao INT,
+    id_monitor INT, -- Define o monitor que realizará a entrega
+    id_beneficiario INT,
+    dia_semana_entrega INT,-- Dias da semana para retirada 
+    horario_entrega INT, -- Período de retirada da tinta, de acordo com a disponibilidade
+    status_entrega ENUM('Agendado', 'Concluído', 'Cancelado') DEFAULT 'Agendado', -- Campo a ser alterado conforme a necessidade
+    local_entrega VARCHAR (40),
+    FOREIGN KEY (id_analise) REFERENCES Analise (id_analise),
+    FOREIGN KEY (id_solicitacao) REFERENCES Solicitacao (id_solicitacao),
+    FOREIGN KEY (id_monitor) REFERENCES Monitor (id_monitor),
+    FOREIGN KEY (id_beneficiario) REFERENCES Beneficiario (id_beneficiario)
+);
+-- Entrega_tintas: Registra as tintas que serão entregues.
+CREATE TABLE Entrega_tintas (
+    id_entrega INT,
+    id_tintas INT,
+    quantidade DECIMAL (5,2),
+    PRIMARY KEY (id_entrega, id_tintas),
+    FOREIGN KEY (id_entrega) REFERENCES Entrega (id_entrega),
+    FOREIGN KEY (id_tintas) REFERENCES Tintas (id_tintas)
+);
+-- Registra o feedback dos doadores e benificiários
+CREATE TABLE Doacao_feedback (
+    id_feedback INT AUTO_INCREMENT PRIMARY KEY,
+    id_doacao INT,
+    avaliacao INT (1), -- Avaliação de 0 a 5
+    feedback VARCHAR (200),
+    sugestoes VARCHAR (200),
+    FOREIGN KEY (id_doacao) REFERENCES Doacao (id_doacao) 
+);
+
+CREATE TABLE Entrega_feedback (
+    id_feedback INT AUTO_INCREMENT PRIMARY KEY,
+    id_entrega INT,
+    avaliacao INT (1), -- Avaliação de 0 a 5
+    feedback VARCHAR (200),
+    sugestoes VARCHAR (200),
+    FOREIGN KEY (id_entrega) REFERENCES Entrega (id_entrega) 
+);
+
+/*
+//Processo de segurança no PHP
+// Exemplo em PHP usando a biblioteca password_hash
+$senha = 'minhaSenhaSegura';
+$options = [
+    'cost' => 12, // Ajuste o custo para controlar a força do hash
+];
+$senha_hash = password_hash($senha, PASSWORD_DEFAULT, $options);
+
+// Inserir no banco de dados
+INSERT INTO Monitor (nome_monitor, senha_hash)
+VALUES ('João da Silva', '$senha_hash');
+
+// Verificação de senha no PHP
+// Recuperar o hash armazenado no banco de dados
+$hash_armazenado = // ...
+
+// Comparar o hash calculado com o hash armazenado
+if (password_verify($senha_informada, $hash_armazenado)) {
+    // Autenticação bem-sucedida
+} else {
+    // Autenticação falhou
+}
+*/
+-- Listar os Beneficiarioes
+SELECT * FROM Beneficiario;
+
+-- Verificação de Professores responsáveis por Monitores
+SELECT * FROM Monitor
+WHERE id_monitor IN (SELECT gestor FROM Monitor WHERE gestor IS NOT NULL);
+
+-- Relação entre tipo de organização e área de atuação
+SELECT tipo_organizacao, area_atuacao, COUNT(*) AS total
+FROM Organizacao
+GROUP BY tipo_organizacao, area_atuacao;
+
+-- Tintas próximas da validade nos últimos 30 dias
+SELECT * FROM Tintas
+WHERE data_validade_tintas BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
+
+-- Tipo de organização e área de atuação de Organizações que receberam tintas
+SELECT o.tipo_organizacao, o.area_atuacao, COUNT(*) AS total_beneficiarioes
+FROM Beneficiario r
+INNER JOIN Organizacao o ON r.cnpj = o.cnpj
+GROUP BY o.tipo_organizacao, o.area_atuacao;
+
+
+-- Doador anônimo
+INSERT INTO `doador` (`id_doador`, `nome_doador`, `endereco_doador`, `email_doador`, `senha_hash`, `eh_empresa`, `cnpj`) VALUES
+(1, 'Anonimo', NULL, 'anonimo@anonimo', 'anonimo', 0, NULL);
+-- Doações realizadas nos pontos de coleta (Lojas Saci)
+INSERT INTO `doador` (`id_doador`, `nome_doador`, `endereco_doador`, `email_doador`, `senha_hash`, `eh_empresa`, `cnpj`) VALUES
+(2, 'Lojas Saci', NULL, 'sacitintas@sacitintas', 'anonimo', 0, NULL);
+
+-- STORED PROCEDURE para mistura de tintas
+DELIMITER $$
+
+CREATE PROCEDURE mesclar_tintas(
+    IN id_tinta1 INT,
+    IN id_tinta2 INT,
+    OUT nova_tinta_id INT
+)
+BEGIN
+    DECLARE nova_quantidade DECIMAL(5,2); -- Soma das duas quantidades
+    DECLARE nova_data_validade DATE; -- Considerar a menor data das duas tintas
+    DECLARE historico_mistura VARCHAR(200);
+
+    -- Verifica se as tintas existem e não estão marcadas como excluídas
+    IF NOT EXISTS (SELECT * FROM Tintas WHERE id_tintas = id_tinta1 AND excluido = 0) OR
+       NOT EXISTS (SELECT * FROM Tintas WHERE id_tintas = id_tinta2 AND excluido = 0) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Uma ou ambas as tintas não existem ou estão marcadas como excluídas.';
+    END IF;
+
+     -- Calcula a nova quantidade
+    SELECT
+        t1.quantidade_tintas_disponivel + t2.quantidade_tintas_disponivel INTO nova_quantidade
+    FROM Tintas t1, Tintas t2
+    WHERE t1.id_tintas = id_tinta1 AND t2.id_tintas = id_tinta2;
+
+    -- Calcula a menor data de validade
+    SELECT LEAST(t1.data_validade_tintas, t2.data_validade_tintas)
+    INTO nova_data_validade
+    FROM Tintas t1
+    JOIN Tintas t2 ON t1.id_tintas = id_tinta1 AND t2.id_tintas = id_tinta2;
+
+    -- Verifica se a nova quantidade é maior que zero
+    IF nova_quantidade <= 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'A quantidade da nova tinta deve ser maior que zero.';
+    END IF;
+
+    -- Constrói o histórico da mistura
+    SET historico_mistura = CONCAT(
+        'Tinta 1\n',
+        (SELECT CONCAT('nome: ', nome_tintas, ', quantidade: ', quantidade_tintas_disponivel) FROM Tintas WHERE id_tintas = id_tinta1),
+        '\nTinta 2\n',
+        (SELECT CONCAT('nome: ', nome_tintas, ', quantidade: ', quantidade_tintas_disponivel) FROM Tintas WHERE id_tintas = id_tinta2),
+        '\nData da Mistura: ', NOW()
+    );
+
+    -- Insere o novo registro com o nome fornecido pelo usuário e o histórico da mistura
+    INSERT INTO Tintas (nome_tintas, quantidade_tintas_disponivel, data_validade_tintas, mistura, histórico)
+    VALUES (
+        nome_novo_tinta,
+        nova_quantidade,
+        nova_data_validade,
+        1,
+        historico_mistura
+    );
+
+    SET nova_tinta_id = LAST_INSERT_ID();
+    -- Marca as tintas originais como excluídas
+    UPDATE Tintas SET excluido = 1 WHERE id_tintas IN (id_tinta1, id_tinta2);
+END $$
+DELIMITER ;
+-- FIM STORED PROCEDURE para mistura de tintas
+
+/*
+-- Exemplo de sintaxe do Stored Procedure
+CALL mesclar_tintas([#id_tintas_1], [#id_tintas_2], ['novo nome'], @nova_tinta_id);
+SELECT @nova_tinta_id; -- Exibe o ID da nova tinta
+
+-- Exemplo de chamada do Stored Procedure
+CALL mesclar tintas(2, 5, 'Verde limão', @nova_tinta_id);
+SELECT @nova_tinta_id;
+
+*/
+
+-- STORED PROCEDURE para o TRIGGER de atualiazação de status de solicitação
+DELIMITER $$
+CREATE PROCEDURE sp_enviar_notificacao_aprovacao(IN id_solicitacao INT)
+BEGIN
+  DECLARE beneficiario_email VARCHAR(100);
+
+  SELECT b.email INTO beneficiario_email
+  FROM Analise a
+  INNER JOIN Solicitacao s ON a.id_solicitacao = s.id_solicitacao
+  INNER JOIN Beneficiario b ON s.id_beneficiario = b.id_beneficiario
+  WHERE a.id_solicitacao = id_solicitacao;
+
+  -- Construir a mensagem de notificação
+  SET @mensagem = CONCAT('Sua solicitação de número ', id_solicitacao, ' foi aprovada.');
+END $$
+DELIMITER;
+-- FIM STORED PROCEDURE para o TRIGGER de atualiazação de status de solicitação
+
+
+-- TRIGGER para atualização de status de solicitação
+DELIMITER $$
+CREATE TRIGGER tr_notificar_aprovacao_solicitacao
+AFTER UPDATE ON Analise
+FOR EACH ROW
+BEGIN
+  IF NEW.status_solicitacao = 'Aprovado' AND OLD.status_solicitacao != 'Aprovado' THEN
+    CALL sp_enviar_notificacao_aprovacao(NEW.id_solicitacao);
+  END IF;
+END $$
+DELIMITER ;
+-- FIM TRIGGER para atualização de status de solicitação
+
+/*
+*Código PHP para integração com PHP
+
+CREATE PROCEDURE sp_enviar_email(IN email_destino VARCHAR(100), IN assunto VARCHAR(100), IN corpo VARCHAR(1000))
+BEGIN
+  -- // Bloco DECLARE exit handler: Garante que qualquer exceção seja capturada e um rollback seja realizado.
+  DECLARE exit handler for sqlexception 
+  BEGIN
+    ROLLBACK;
+    -- Logar o erro
+  END;
+
+  -- Código PHP para enviar o email usando PHPMailer
+  -- // Variável @php_code: Armazena o código PHP como uma string.
+
+  SET @php_code = CONCAT(
+    'use PHPMailer\\PHPMailer\\PHPMailer;',
+    'use PHPMailer\\PHPMailer\\Exception;',
+    'require \'vendor/autoload.php\';',
+    '
+    $mail = new PHPMailer(true);
+    $mail->SMTPDebug = 0; //Enable verbose debug output
+    $mail->isSMTP(); //Send using SMTP
+    $mail->Host       = \'smtp.example.com\'; //Set the SMTP server to send through
+    $mail->SMTPAuth   = true; //Enable SMTP authentication
+    $mail->Username   = \'your_email@example.com\'; //SMTP username
+    $mail->Password   = \'your_password\'; //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
+    $mail->Port       = 465; //TCP port to connect to
+    
+    $mail->setFrom(\'your_email@example.com\', \'Seu Nome\');
+    $mail->addAddress(\'', email_destino, '\', \'Beneficiário\');
+    
+    $mail->isHTML(true); //Set email format to HTML
+    $mail->Subject = assunto;
+    $mail->Body    = corpo;
+    
+    $mail->send();
+    ',
+    'echo "Mensagem enviada com sucesso!";'
+  );
+  -- // PREPARE, EXECUTE, DEALLOCATE: Comandos SQL para preparar, executar e dealocar uma declaração preparada, permitindo a execução de código PHP dentro do MySQL.
+  PREPARE stmt FROM @php_code;
+  EXECUTE stmt;
+  DEALLOCATE PREPARE stmt;
+END;
+*/
+
+/*
+* Código no PHP
+<?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';
+
+$mail = new PHPMailer(true);
+
+try {
+    //Configurações do email
+    $mail->SMTPDebug = 0;                      //Enable verbose debug output
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = 'smtp.example.com';                    //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = 'your_email@example.com';                     //SMTP username
+    $mail->Password   = 'your_password';                               //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+    $mail->Port       = 465;                                    //TCP port to connect to
+
+    $mail->setFrom('your_email@example.com', 'Seu Nome');
+    $mail->addAddress($email_beneficiario, 'Beneficiário');
+
+    //Conteúdo do email
+    $mail->isHTML(true);                                  //Set email format to HTML
+    $mail->Subject = 'Pedido Aprovado';
+    $mail->Body    = $mensagem;
+
+    $mail->send();
+    echo 'Mensagem enviada com sucesso!';
+} catch (Exception $e) {
+    echo "Mensagem não pode ser enviada. Mailer Error: {$mail->ErrorInfo}";
+}
+*/
