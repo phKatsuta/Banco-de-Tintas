@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['user_types'] = $user_types;
 
         // Redireciona para a página inicial
-        header("Location: home.php");
+        header("Location: index.php");
         exit;
     } else {
         $error = "Email ou senha incorretos!";
