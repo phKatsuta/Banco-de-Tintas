@@ -1,0 +1,70 @@
+CREATE DATABASE Hospital_GEMINI;
+USE Hospital_GEMINI;
+
+CREATE TABLE Paciente (
+    CRH INT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    endereco VARCHAR(100),
+    cidade VARCHAR(50),
+    CEP CHAR(8) NOT NULL,
+    data_nascimento DATE,
+    sexo ENUM('Masculino', 'Feminino'),
+    responsavel VARCHAR(100)
+);
+
+CREATE TABLE Medico (
+    CRM CHAR(8) PRIMARY KEY,
+    nome VARCHAR(50),
+    endereco VARCHAR(100),
+    cidade VARCHAR(50),
+    bip CHAR(11),
+    especialidade VARCHAR(50)
+);
+
+CREATE TABLE Consulta (
+    id_consulta INT PRIMARY KEY AUTO_INCREMENT,
+    CRH INT,
+    CRM CHAR(8),
+    data_hora DATETIME,
+    FOREIGN KEY (CRH) REFERENCES Paciente(CRH),
+    FOREIGN KEY (CRM) REFERENCES Medico(CRM)
+);
+
+CREATE TABLE Exame (
+    id_exame INT PRIMARY KEY AUTO_INCREMENT,
+    id_consulta INT,
+    tipo VARCHAR(100),
+    descricao VARCHAR(200),
+    data_realizacao DATE,
+    FOREIGN KEY (id_consulta) REFERENCES Consulta(id_consulta)
+);
+
+CREATE TABLE Prontuario (
+    id_prontuario INT PRIMARY KEY AUTO_INCREMENT,
+    id_consulta INT,
+    problema VARCHAR(100),
+    data_constatacao DATETIME,
+    receita VARCHAR(100),
+    cuidados_especiais VARCHAR(200),
+    FOREIGN KEY (id_consulta) REFERENCES Consulta(id_consulta)
+);
+
+CREATE TABLE Internacao (
+    id_internacao INT PRIMARY KEY AUTO_INCREMENT,
+    CRH INT,
+    ala INT,
+    num_quarto INT,
+    num_leito INT,
+    data_entrada DATETIME,
+    previsao_saida DATE,
+    FOREIGN KEY (CRH) REFERENCES Paciente(CRH),
+    FOREIGN KEY (ala, num_quarto, num_leito) REFERENCES Leito(ala, num_quarto, num_leito)
+);
+
+CREATE TABLE Leito (
+    ala INT,
+    num_quarto INT,
+    num_leito INT,
+    tipo VARCHAR(100),
+    PRIMARY KEY (ala, num_quarto, num_leito)
+);

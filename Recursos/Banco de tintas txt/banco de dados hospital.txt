@@ -1,0 +1,85 @@
+CREATE DATABASE Hospital;
+Use Hospital;
+CREATE TABLE Pacientes (
+    CRH int Primary Key AUTO_INCREMENT,
+    nome varchar (50) not null,
+    sobrenome varchar (50),
+    endereco varchar (100),
+    cidade varchar (50),
+    CEP CHAR (8) not null,
+    data_nascimento date,
+    sexo enum('Masculino', 'Feminino'),
+    responsável varchar (100) null   
+);
+
+create table Pacientes_telefone(
+    CRH int,
+    telefone char (11),
+    primary key (CRH, telefone),
+    foreign key (CRH) references Pacientes (CRH)
+);
+
+create table Medicos (
+    CRM Char (8) Primary Key,
+    nome varchar (50),
+    sobrenome varchar (50),
+    endereco varchar (50),
+    cidade varchar (50),
+    bip char (11),
+    especialidade varchar (50)
+);
+
+create table Medicos_telefone(
+    CRM char (8),
+    telefone char (11),
+    primary key (CRM, telefone),
+    foreign key (CRM) references Medicos (CRM)
+);
+
+create table Consulta (
+    CRM char (8),
+    CRH int,
+    dia_hora datetime not null,
+    primary key (CRM, CRH, dia_hora),
+    foreign key (CRM) references Medicos (CRM),
+    foreign key (CRH) references Pacientes (CRH)
+);
+
+CREATE TABLE Solicita (
+	dia_hora datetime NOT NULL,
+	FOREIGN KEY dia_hora REFERENCES Consulta (dia_hora)
+);
+
+Create TABLE Exame (
+    tipo varchar (100),
+    resultado varchar (100),
+    descricao varchar (200),
+    data_realizacao date
+);
+
+CREATE TABLE Leitos (
+    ala int (2),
+    num_quarto int (2),
+    num_leito int (1),
+    tipo varchar (100),
+    primary key (ala, num_quarto, num_leito)
+);
+
+CREATE TABLE Internacao (
+    ala int (2),
+    num_quarto int (2),
+    num_leito int (1),
+    CRH int,
+    data_entrada datetime,
+    data_prevista_saida date,
+    PRIMARY KEY (ala, num_quarto, num_leito, CRH),
+    FOREIGN KEY (CRH) REFERENCES Pacientes (CRH),
+    FOREIGN KEY (ala, num_quarto, num_leito) REFERENCES Leitos (ala, num_quarto, num_leito)
+);
+
+create table Prontuario (
+    problema varchar (100),
+    data_constatacao datetime,
+    receita varchar (100),
+    cuidados_especiais varchar (200)
+);
