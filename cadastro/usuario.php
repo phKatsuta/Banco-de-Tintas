@@ -1,10 +1,10 @@
 <?php
 require_once '../includes/config.php'; // Arquivo com a conexão ao banco
-
+session_start();
 include '../includes/via_cep.php';
-//include '../includes/busca_cep.php';
+include '../includes/busca_cep.php';
 include '../includes/function_buscarEnderecoViaCep.php';
-//include '../includes/teste_via_cep.php'; // Teste de funcionalidade da API
+// include '../includes/teste_via_cep.php'; // Teste de funcionalidade da API
 
 // Variáveis para armazenar mensagens de erro/sucesso
 $errors = [];
@@ -145,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="button" id="buscarCep">Buscar CEP</button>
         <div id="loading-indicator" style="display: none;">Carregando...</div><br>
         <label for="usuario_endereco">Endereço:</label>
-        <input type="text" name="usuario_endereco" id="endereco" readonly>
+        <input type="text" name="usuario_endereco" id="usuario_endereco" readonly>
 
         <label for="endereco_num">Número:</label>
         <input type="text" name="usuario_endereco_num" id="endereco_num"><br>

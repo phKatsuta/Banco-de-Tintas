@@ -2,7 +2,9 @@
 const form = document.getElementById("cadastroForm");
 const ehEmpresaCheckbox = document.getElementById("eh_empresa");
 const usuario_documento_input = document.getElementById("usuario_documento");
-const usuario_documento_input_Error = document.getElementById("usuario_documento_Error");
+const usuario_documento_input_Error = document.getElementById(
+  "usuario_documento_Error"
+);
 
 usuario_documento_input.addEventListener("input", function () {
   let valor = usuario_documento_input.value.replace(/\D/g, ""); // Remove tudo que não é número
@@ -75,16 +77,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    fetch(`./includes/via_cep.php?cep=${cep}`)
-    .then(response => response.json())
+    fetch(`../includes/via_cep.php?cep=${cep}`)
+      .then((response) => response.json())
       .then((data) => {
         if (data.erro) {
           alert("CEP não encontrado.");
         } else {
-          document.getElementById("endereco").value = data.logradouro || "";
-          document.getElementById("bairro").value = data.bairro || "";
-          document.getElementById("cidade").value = data.localidade || "";
-          document.getElementById("estado").value = data.uf || "";
+          document.getElementById("usuario_endereco").value = data.logradouro ?? "";
+          document.getElementById("usuario_bairro").value = data.bairro ?? "";
+          document.getElementById("usuario_cidade").value = data.localidade ?? "";
+          document.getElementById("usuario_estado").value = data.uf ?? "";
         }
       })
       .catch((error) => {
@@ -95,9 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Remover atributo readonly antes do envio para o banco de dados
-form.addEventListener('submit', function(event) {
-    document.getElementById('endereco').removeAttribute('readonly');
-    document.getElementById('bairro').removeAttribute('readonly');
-    document.getElementById('cidade').removeAttribute('readonly');
-    document.getElementById('estado').removeAttribute('readonly');
+form.addEventListener("submit", function (event) {
+  document.getElementById("endereco").removeAttribute("readonly");
+  document.getElementById("bairro").removeAttribute("readonly");
+  document.getElementById("cidade").removeAttribute("readonly");
+  document.getElementById("estado").removeAttribute("readonly");
 });

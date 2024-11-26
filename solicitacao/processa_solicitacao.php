@@ -2,14 +2,7 @@
 require_once '../includes/config.php'; // Certifique-se de que isso inicializa $pdo
 session_start();
 
-// Verificar se o usuário está logado e se é do tipo 'Beneficiario'
-if (!isset($_SESSION['usuario_id']) || !in_array('Beneficiario', getUserTypes($pdo, $_SESSION['usuario_id']))) {
-    header("Location: login.php");
-    exit();
-}
-
-// Obter o ID do usuário logado
-$usuario_id = $_SESSION['usuario_id'];
+include '../includes/gera_menu.php';
 
 // Verificar se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

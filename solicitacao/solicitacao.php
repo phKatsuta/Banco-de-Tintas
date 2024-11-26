@@ -1,17 +1,17 @@
 <?php
-require_once '../includes/config.php'; // Certifique-se de que isso inicializa $pdo
-require_once '../includes/gera_menu.php';
-require_once '../includes/verifica_usuario_tipo.php';
+require_once '../includes/config.php';
 session_start();
+
+require_once '../includes/gera_menu.php';
+
+// Obter o ID do usuário logado
+$usuario_id = $_SESSION['usuario_id'];
 
 // Verificar se o usuário está logado e se é do tipo 'Beneficiario'
 if (!isset($_SESSION['usuario_id']) || !in_array('Beneficiario', getUserTypes($pdo, $_SESSION['usuario_id']))) {
     header("Location: login.php");
     exit();
 }
-
-// Obter o ID do usuário logado
-$usuario_id = $_SESSION['usuario_id'];
 
 // Obter as tintas disponíveis para solicitação
 $stmt = $pdo->prepare("SELECT * FROM Tintas WHERE excluido = 0 AND quantidade_tintas_disponivel > 0 AND (codigo_RGB IS NOT NULL AND codigo_RGB != '')");

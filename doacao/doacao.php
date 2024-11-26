@@ -1,9 +1,9 @@
 <?php
 require_once '../includes/config.php'; // Certifique-se de que isso inicializa $pdo
-require_once '../includes/gera_menu.php';
-require_once '../includes/verifica_usuario_tipo.php';
-require_once 'processa_doacao.php';
 session_start();
+
+require_once '../includes/gera_menu.php';
+require_once 'processa_doacao.php';
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {

@@ -18,6 +18,7 @@ include './templates/header.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/styles.css">
+    <link rel="stylesheet" href="./CSS/styles_menu.css">
     <title>Banco de Tintas</title>
 </head>
 
@@ -29,7 +30,7 @@ include './templates/header.php';
         <?php endif; ?>
 
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->
-        <?php include 'includes/menu&permissoes.php'; ?>
+        <?php include 'includes/gera_menu.php'; ?>
 
         <!-- Modal -->
         <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
@@ -77,4 +78,5 @@ include './templates/header.php';
         </section>
     </main>
     <script src="./SCRIPT/script.js"></script>
+    <script scr="./perfil/script_modais.hs"></script>
     <?php include './templates/footer.php'; ?>
