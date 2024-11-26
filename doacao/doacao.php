@@ -1,7 +1,4 @@
 <?php
-require_once '../includes/config.php'; // Certifique-se de que isso inicializa $pdo
-session_start();
-
 require_once '../includes/gera_menu.php';
 require_once 'processa_doacao.php';
 

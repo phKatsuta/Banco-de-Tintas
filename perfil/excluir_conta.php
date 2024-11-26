@@ -1,4 +1,6 @@
 <?php
+require_once BASE_URL. 'includes/gera_menu.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario_id = $_SESSION['usuario_id'];
     $confirmacao = $_POST['confirmText'];

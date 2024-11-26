@@ -1,11 +1,10 @@
 <?php
-require_once '../includes/config.php'; // Arquivo com a conexão ao banco
-session_start();
+require_once  '../includes/gera_menu.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     // Redireciona para a página de login se não estiver logado
-    header("Location: login.php");
+    header("Location:". BASE_URL . "login.php");
     exit();
 }
 
@@ -77,11 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['usuario_documento'] = $usuario_documento;
 
         // Redireciona de volta para o perfil com uma mensagem de sucesso
-        header("Location: editar_perfil.php?msg=sucesso");
+        header("Location:" . BASE_URL . "editar_perfil.php?msg=sucesso");
         exit();
     } else {
         // Se não houver alteração (por exemplo, se os dados forem os mesmos)
-        header("Location: editar_perfil.php?msg=nenhuma_alteracao");
+        header("Location:" . BASE_URL . "editar_perfil.php?msg=nenhuma_alteracao");
         exit();
     }
 }
