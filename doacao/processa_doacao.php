@@ -1,6 +1,7 @@
 <?php
 // Função para validar e processar o formulário de doação
-function processDonationForm($pdo, $form_data, $usuario_id, $tipos_usuario) {
+function processDonationForm($pdo, $form_data, $usuario_id, $tipos_usuario)
+{
     $errors = [];
     $local_doado = trim($form_data['local_doado']);
     $tintas = $form_data['tintas'] ?? [];
@@ -20,9 +21,8 @@ function processDonationForm($pdo, $form_data, $usuario_id, $tipos_usuario) {
             $pdo->beginTransaction();
 
             // Inserir a doação
-            $stmt = $pdo->prepare("INSERT INTO Doacao (id_doador, id_monitor, data_doacao, local_doado) VALUES (?, ?, CURRENT_TIMESTAMP, ?)");
-            $id_monitor = (in_array('Gestor', $tipos_usuario) || in_array('Monitor', $tipos_usuario)) ? $usuario_id : null;
-            $stmt->execute([$id_doador, $id_monitor, $local_doado]);
+            $stmt = $pdo->prepare("INSERT INTO Doacao (id_doador, data_doacao, local_doado) VALUES (?, CURRENT_TIMESTAMP, ?)");
+            $stmt->execute([$id_doador, $local_doado]);
             $id_doacao = $pdo->lastInsertId();
 
             // Inserir tintas e associá-las
