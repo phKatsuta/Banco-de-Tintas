@@ -1,7 +1,4 @@
 <?php
-require_once '../includes/config.php'; // Certifique-se de que isso inicializa $pdo
-session_start();
-
 include '../includes/gera_menu.php';
 
 // Verificar se o formulário foi enviado

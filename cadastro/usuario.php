@@ -1,6 +1,5 @@
 <?php
-require_once '../includes/config.php'; // Arquivo com a conexão ao banco
-session_start();
+require_once '../includes/gera_menu.php';
 include '../includes/via_cep.php';
 include '../includes/busca_cep.php';
 include '../includes/function_buscarEnderecoViaCep.php';
@@ -203,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit">Cadastrar</button>
     </form>
     
-    <script type="text/javascript" src="../SCRIPT/script_cadastrar.js"></script>
+    <script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
 
 </body>
 

@@ -1,8 +1,5 @@
 <?php
-require_once '../includes/config.php';
-session_start();
-
-require_once '../includes/gera_menu.php';
+require_once  '../includes/gera_menu.php';
 
 // Obter o ID do usuário logado
 $usuario_id = $_SESSION['usuario_id'];

@@ -1,10 +1,8 @@
 <?php
-require_once '../includes/config.php';
-session_start();
-
+require_once '../includes/gera_menu.php';
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header("Location:" . BASE_URL . "login.php");
     exit();
 }
 

@@ -15,3 +15,9 @@ try {
     echo "Erro na conexão: " . $e->getMessage();
     die();
 }
+
+// Caminho absoluto da URL a partir da raiz do servidor
+define('BASE_URL', '/projetos/Banco_Tintas/Banco-de-Tintas/');
+
+// Caminho absoluto do sistema de arquivos no servidor
+define('BASE_PATH', __DIR__ . '/');

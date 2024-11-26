@@ -1,8 +1,5 @@
 <?php
 // Incluir arquivos de configuração e sessões
-require_once 'includes/config.php';
-session_start();
-
 if (isset($_SESSION['success_message'])) {
     echo '<p style="color: green;">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
     unset($_SESSION['success_message']);
@@ -30,7 +27,7 @@ include './templates/header.php';
         <?php endif; ?>
 
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->
-        <?php include 'includes/gera_menu.php'; ?>
+        <?php require_once 'includes/gera_menu.php'; ?>
 
         <!-- Modal -->
         <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
