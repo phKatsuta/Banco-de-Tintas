@@ -1,0 +1,98 @@
+/* Paint Can Section Styles */
+.paint-can-section {
+    margin-top: 80px; /* Garante que o conteúdo não sobreponha o header */
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.paint-can-container {
+    text-align: center;
+}
+
+.section-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Estilo para os botões */
+.bn632-hover {
+    width: 160px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 10px;
+    height: 55px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 50px;
+    transition: all .4s ease-in-out;
+    display: inline-block;
+    box-sizing: border-box; /* Garante que o box model seja correto */
+    overflow: hidden; /* Para garantir que o texto e o fundo não "vazem" */
+    z-index: 1; /* Garantir que os botões estejam sobre outros elementos */
+    position: relative; /* Manter a posição do botão */
+    padding: 0; /* Remover padding adicional */
+}
+
+/* Hover Effect */
+.bn632-hover:hover {
+    background-position: 100% 0;
+    transition: all .4s ease-in-out;
+}
+
+/* Focus Effect */
+.bn632-hover:focus {
+    outline: none;
+}
+
+/* Estilos específicos para as cores dos botões */
+.bn632-hover.red {
+    background-image: linear-gradient(to right, #ff3b3f, #ff5a5e, #ff7376);
+}
+
+.bn632-hover.blue {
+    background-image: linear-gradient(to right, #2f56b5, #4f78d1, #728bed);
+}
+
+.bn632-hover.green {
+    background-image: linear-gradient(to right, #28a745, #52c572, #7de094);
+}
+
+.bn632-hover.yellow {
+    background-image: linear-gradient(to right, #ffcc00, #ffde4d, #ffed7a);
+}
+
+.bn632-hover.black {
+    background-image: linear-gradient(to right, #343a40, #555b62, #797e85);
+}
+
+.bn632-hover.white {
+    background-image: linear-gradient(to right, #d1d1d1, #b8b8b8, #9f9f9f);
+}
+
+.bn632-hover.orange {
+    background-image: linear-gradient(to right, #ff7f00, #ff9c2e, #ffb74d);
+}
+
+.bn632-hover.pink {
+    background-image: linear-gradient(to right, #e91e63, #f06292, #f8bbd0);
+}
+
+.bn632-hover.gray {
+    background-image: linear-gradient(to right, #757575, #9e9e9e, #bdbdbd);
+}
+
+.bn632-hover.purple {
+    background-image: linear-gradient(to right, #9c27b0, #ba68c8, #e1bee7);
+}
+
+/* Alinhamento e aparência da imagem */
+.paint-can {
+    max-width: 100%;  /* Garante que a imagem não ultrapasse a tela */
+    max-height: 400px; /* Limita a altura da imagem para não ficar gigante */
+    display: block;
+    margin: 20px auto;
+}
