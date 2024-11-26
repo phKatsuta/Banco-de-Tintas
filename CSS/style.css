@@ -265,8 +265,9 @@ ol {
   float: right;
   font-weight: 500;
   background: #ffb320;
-  padding: 8px 28px;
+  padding: 15px 30px;
   border-radius: 30px;
+  margin: 10px;
 }
 
 .user-panel a {
@@ -314,7 +315,7 @@ ol {
 ---------------------*/
 
 .hero-slider .hs-item {
-  height: 865px;
+  height: 850px;
   display: table;
   width: 100%;
 }
