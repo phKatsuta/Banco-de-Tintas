@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/config.php';
+require 'includes/config.php'; // Inclua o arquivo de configuração do banco de dados
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
@@ -37,11 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <!-- Se preferir, adicione seus arquivos de CSS aqui -->
 </head>
 <body>
     <h1>Login</h1>
     <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
-    <form method="POST">
+    <form method="POST" action="login.php">
         <label>Email:</label>
         <input type="email" name="email" required>
         <br>

@@ -1,110 +1,220 @@
+//
+
+//[================================================]
+//SALVAR ESSE PROJETO TODO NA PASTA HTDOCS QUANDO FOR EXIBIR
+//[================================================]
+
+<?php
+session_start();
+require 'includes/config.php';
+
+$error = ''; // Inicialize a variável de erro
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Verifica o usuário
+    $stmt = $pdo->prepare("SELECT * FROM Usuarios WHERE usuario_email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['senha_hash'])) {
+        // Define a sessão
+        $_SESSION['usuario_id'] = $user['id'];
+
+        // Obtém os tipos de usuário
+        $stmt = $pdo->prepare("SELECT tipo FROM Usuario_Tipos WHERE usuario_id = ?");
+        $stmt->execute([$user['id']]);
+        $user_types = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $_SESSION['user_types'] = $user_types;
+
+        // Redireciona para a página inicial
+        header("Location: index.php");
+        exit;
+    } else {
+        $error = "Email ou senha incorretos!";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-	<title>Game Warrior Template</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="Game Warrior Template">
-	<meta name="keywords" content="warrior, game, creative, html">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- Favicon -->   
-	<link href="img/favicon.ico" rel="shortcut icon"/>
+    <title>Game Warrior Template</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Game Warrior Template">
+    <meta name="keywords" content="warrior, game, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->   
+    <link href="img/favicon.ico" rel="shortcut icon"/>
 
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
 
-	<!-- Stylesheets -->
-	<link rel="stylesheet" href="css/bootstrap.min.css"/>
-	<link rel="stylesheet" href="css/font-awesome.min.css"/>
-	<link rel="stylesheet" href="css/owl.carousel.css"/>
-	<link rel="stylesheet" href="css/style.css"/>
-	<link rel="stylesheet" href="css/animate.css"/>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/owl.carousel.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/animate.css"/>
+
+    <style>
+        /* Ajustes de padding para o layout */
+/* Estilos para o header para garantir que ele fique acima do conteúdo */
+header.header-section {
+    position: relative;
+    z-index: 10; /* Garante que o header ficará acima de outros elementos */
+	
+}
+
+/* Ajustes de padding para o layout */
+.page-info-section {
+    padding-top: 120px;  /* Aumentar o padding-top para garantir que o formulário não se sobreponha ao header */
+}
+
+.pi-content {
+    padding-top: 0px;  /* Remover o padding-top extra */
+}
+
+/* Formulário de login */
+.login-form {
+    max-width: 400px;
+    margin: 20px auto 0; /* Reduzido o margin-top para 20px */
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 30px;
+    border-radius: 8px;
+    color: white;
+    z-index: 1; /* Garante que o formulário fique abaixo do header */
+}
 
 
-	<!--[if lt IE 9]>
-	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
+h2 {
+    color: #ffffff; /* Substitua com a cor desejada */
+}
+
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
 
 </head>
 <body>
-	<!-- Page Preloder -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
 
-	<!-- Header section -->
-	<header class="header-section">
-		<div class="container">
-			<!-- logo -->
-			<a class="site-logo" href="index.html">
-				<img src="img/logo.png" alt="">
-			</a>
-			<div class="user-panel">
-				<a href="single-blog.html">Login</a>
-				<br>
-			</div>
-			<div class="user-panel">
-				<a href="categories.html">Cadastro</a>
-			</div>
-			<!-- responsive -->
-			<div class="nav-switch">
-				<i class="fa fa-bars"></i>
-			</div>
-			<!-- site menu -->
-			<nav class="main-menu">
-				<ul>
-					<li><a href="index.html">Home</a></li>
-					<li><a href="review.html">Banco de Tintas</a></li>					
-					<li><a href="contact.html">Contato</a></li>
-					<li><a href="community.html">Sobre o Projeto</a></li>		
-				</ul>
-			</nav>
-		</div>
-	</header>
-	<!-- Header section end -->
+    <!-- Header section -->
+    <header class="header-section">
+        <div class="container">
+            <!-- logo -->
+            <a class="site-logo" href="index.html">
+                <img src="img/logo.png" alt="">
+            </a>
+            <div class="user-panel">
+                <a href="single-blog.html">Login</a>
+                <br>
+            </div>
+            <div class="user-panel">
+                <a href="categories.html">Cadastro</a>
+            </div>
+            <!-- responsive -->
+            <div class="nav-switch">
+                <i class="fa fa-bars"></i>
+            </div>
+            <!-- site menu -->
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="review.html">Banco de Tintas</a></li>                    
+                    <li><a href="contact.html">Contato</a></li>
+                    <li><a href="community.html">Sobre o Projeto</a></li>        
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- Header section end -->
 
+    <!-- Page info section -->
+    <section class="page-info-section set-bg" data-setbg="img/page-top-bg/2.jpg">
+        <div class="pi-content">
+            <div class="container">
+                <div class="row">
+                    <!-- Formulário de Login Centralizado -->
+                    <div class="col-md-12">
+                        <div class="login-form">
+                            <h2>Login</h2>
+                            <form method="POST" action="login.php">
+								<label>Email:</label>
+								<input type="email" name="email" required placeholder="Digite seu email">
+								
+								<label>Senha:</label>
+								<input type="password" name="password" required placeholder="Digite sua senha">
+								
+								<button type="submit">Entrar</button>
+							</form>
+							
+                            <div class="register-link">
+                                <p>Não tem uma conta? <a href="categories.html" style="color: #007bff;">Cadastre-se aqui</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Page info section end -->
 
-	<!-- Page info section -->
-	<section class="page-info-section set-bg" data-setbg="img/page-top-bg/2.jpg">
-		<div class="pi-content">
-			<div class="container">
-				<div class="row">
-					<div class="col-xl-5 col-lg-6 text-white">
-						<h2>Genji - The Game</h2>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Page info section -->
+    <!-- Footer section -->
+    <footer class="footer-section">
+        <div class="container">
+            <ul class="footer-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="review.html">Games</a></li>
+                <li><a href="categories.html">Blog</a></li>
+                <li><a href="community.html">Forums</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="copyright">
+                Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+            </p>
+        </div>
+    </footer>
+    <!-- Footer section end -->
 
-
-	
-	<!-- Footer section -->
-	<footer class="footer-section">
-		<div class="container">
-			<ul class="footer-menu">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="review.html">Games</a></li>
-				<li><a href="categories.html">Blog</a></li>
-				<li><a href="community.html">Forums</a></li>
-				<li><a href="contact.html">Contact</a></li>
-			</ul>
-			<p class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-</p>
-		</div>
-	</footer>
-	<!-- Footer section end -->
-
-
-	<!--====== Javascripts & Jquery ======-->
-	<script src="js/jquery-3.2.1.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.marquee.min.js"></script>
-	<script src="js/main.js"></script>
-    </body>
+    <!--====== Javascripts & Jquery ======-->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.marquee.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
 </html>
