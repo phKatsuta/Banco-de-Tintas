@@ -1,14 +1,5 @@
 <?php
-require_once '../includes/gera_menu.php';
-// Verificar se o usuário tem permissão de Gestor ou Monitor
-if (
-    !isset($_SESSION['usuario_id']) ||
-    !in_array('Gestor', $_SESSION['user_types']) && !in_array('Monitor', $_SESSION['user_types'])
-) {
-    header("Location: ../login.php");
-    exit();
-}
-
+require_once '../includes/verifica_gestor.php';
 // Buscar doações pendentes de confirmação
 $stmt = $pdo->query("
     SELECT 

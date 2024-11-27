@@ -76,11 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['usuario_documento'] = $usuario_documento;
 
         // Redireciona de volta para o perfil com uma mensagem de sucesso
-        header("Location:" . BASE_URL . "editar_perfil.php?msg=sucesso");
+        header("Location:" . BASE_URL . "perfil/editar_perfil.php?msg=sucesso");
         exit();
     } else {
         // Se não houver alteração (por exemplo, se os dados forem os mesmos)
-        header("Location:" . BASE_URL . "editar_perfil.php?msg=nenhuma_alteracao");
+        header("Location:" . BASE_URL . "perfil/editar_perfil.php?msg=nenhuma_alteracao");
         exit();
     }
 }

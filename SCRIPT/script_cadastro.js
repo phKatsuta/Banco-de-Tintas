@@ -1,3 +1,27 @@
+// Função para aplicar a máscara de CEP
+function aplicarMascaraCEP(input) {
+  let valor = input.value;
+
+  // Remove todos os caracteres não numéricos
+  valor = valor.replace(/\D/g, "");
+
+  // Aplica a máscara de CEP (#####-###)
+  if (valor.length <= 5) {
+      valor = valor.replace(/^(\d{5})(\d*)/, "$1-$2");
+  } else {
+      valor = valor.replace(/^(\d{5})(\d{1})(\d{1})(\d{3})/, "$1-$2$3$4");
+  }
+
+  // Atualiza o valor do campo com a máscara
+  input.value = valor;
+}
+
+// Função para carregar o CEP com a máscara quando a página for carregada
+window.onload = function() {
+  let cepInput = document.getElementById("cep");
+  aplicarMascaraCEP(cepInput);
+}
+
 // Buscar CEP
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("buscarCep").addEventListener("click", () => {
@@ -73,115 +97,83 @@ formulario.addEventListener("submit", function (event) {
 });
 
 // Máscara para CPF/CNPJ
-const form = document.getElementById("cadastroForm");
+const form = document.getElementById("form");
 const ehEmpresaCheckbox = document.getElementById("eh_empresa");
 const usuario_documento_input = document.getElementById("usuario_documento");
 const usuario_documento_input_Error = document.getElementById(
   "usuario_documento_Error"
 );
+document.getElementById('form').onsubmit = function() {
+  let documento = document.getElementById('usuario_documento').value;
 
-usuario_documento_input.addEventListener("input", function () {
-  let valor = usuario_documento_input.value.replace(/\D/g, ""); // Remove tudo que não é número
+  // Remove a máscara
+  documento = documento.replace(/\D/g, '');
 
-  if (valor.length > 11) {
-    // Formato de CNPJ: ##.###.###/####-##
-    valor = valor.replace(
-      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})$/,
-      "$1.$2.$3/$4-$5"
-    );
-  } else if (valor.length > 9) {
-    // Formato de CPF: ###.###.###-##
-    valor = valor.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2})$/, "$1.$2.$3-$4");
-  } else if (valor.length > 6) {
-    valor = valor.replace(/^(\d{3})(\d{3})(\d{0,3})$/, "$1.$2.$3");
-  } else if (valor.length > 3) {
-    valor = valor.replace(/^(\d{3})(\d{0,3})$/, "$1.$2");
-  }
+  // Atualiza o valor do campo com o CPF ou CNPJ sem a máscara
+  document.getElementById('usuario_documento').value = documento;
+}
 
-  cpfCnpjInput.value = valor;
-});
+function mascaraDocumento(input) {
+  let valor = input.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
 
-form.addEventListener("submit", function (e) {
-  // Verifica se o campo CPF/CNPJ é obrigatório
-  if (
-    ehEmpresaCheckbox.checked &&
-    usuario_documento_input.value.trim() === ""
-  ) {
-    e.preventDefault(); // Impede o envio do formulário
-    usuario_documento_input_Error.style.display = "inline"; // Mostra a mensagem de erro
+  if (valor.length <= 11) {
+      // Máscara CPF: ###.###.###-##
+      input.value = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   } else {
-    usuario_documento_input_Error.style.display = "none"; // Esconde a mensagem de erro
+      // Máscara CNPJ: ##.###.###/####-##
+      input.value = valor.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
   }
-});
+}
 
+window.onload = function() {
+  // Aplica a máscara ao campo CPF/CNPJ ao carregar a página
+  let documentoField = document.getElementById('usuario_documento');
+  if (documentoField) {
+      mascaraDocumento(documentoField);
+  }
+}
 // Função para mostrar/ocultar os campos de preenchimento para organização no cadastro
 function toggleOrganizacao(checkbox) {
   const orgFields = document.getElementById("organizacao_fields");
   orgFields.style.display = checkbox.checked ? "block" : "none";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("buscarCep").addEventListener("click", () => {
-    const cep = document.getElementById("cep").value.replace(/\D/g, "");
-
-    if (!/^\d{8}$/.test(cep)) {
-      alert("CEP inválido. Por favor, insira um CEP com 8 dígitos.");
-      return;
-    }
-
-    fetch(`../includes/via_cep.php?cep=${cep}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.erro) {
-          alert("CEP não encontrado.");
-        } else {
-          document.getElementById("usuario_endereco").value =
-            data.logradouro ?? "";
-          document.getElementById("usuario_bairro").value = data.bairro ?? "";
-          document.getElementById("usuario_cidade").value =
-            data.localidade ?? "";
-          document.getElementById("usuario_estado").value = data.uf ?? "";
-        }
-      })
-      .catch((error) => {
-        console.error("Erro:", error);
-        alert("Ocorreu um erro ao buscar o CEP. Tente novamente mais tarde.");
-      });
-  });
-});
-
 // Remover atributo readonly antes do envio para o banco de dados
 form.addEventListener("submit", function (event) {
   document.getElementById("endereco").removeAttribute("readonly");
-  document.getElementById("bairro").removeAttribute("readonly");
-  document.getElementById("cidade").removeAttribute("readonly");
-  document.getElementById("estado").removeAttribute("readonly");
+  document.getElementById("usuario_bairro").removeAttribute("readonly");
+  document.getElementById("usuario_cidade").removeAttribute("readonly");
+  document.getElementById("usuario_estado").removeAttribute("readonly");
 });
 
-// Função que habilita os campos para edição do perfil
+// Habilitar edição em editar_perfil.php
 function habilitarEdicao() {
-  // Torna os campos editáveis
-  document.getElementById("usuario_nome").readOnly = false;
-  document.getElementById("cep").readOnly = false;
-  document.getElementById("buscarCep").hidden = false;
-  document.getElementById("usuario_endereco").readOnly = false;
-  document.getElementById("endereco_num").readOnly = false;
-  document.getElementById("endereco_complemento").readOnly = false;
-  document.getElementById("usuario_bairro").readOnly = false;
-  document.getElementById("usuario_cidade").readOnly = false;
-  document.getElementById("usuario_estado").readOnly = false;
-  document.getElementById("usuario_email").readOnly = false;
-  document.getElementById("telefone").readOnly = false;
-  document.getElementById("usuario_documento").readOnly = false;
-  document.getElementById("doador").removeAttribute('disabled');
-  document.getElementById("beneficiario").removeAttribute('disabled');
-
-  // Exibe o botão de salvar e oculta o botão de editar
-  document.getElementById("salvarBtn").style.display = "inline";
+  // Seleciona todos os campos de texto, e-mails e checkboxes dentro do formulário
+  const campos = document.querySelectorAll('#form input[type="text"], #form input[type="email"], #form input[type="checkbox"]');
+  const btnBuscaCep = document.getElementById('buscarCep');
+  // Torna os campos editáveis (ou habilita os checkboxes)
+  campos.forEach(campo => {
+    if (campo.type === 'checkbox') {
+      campo.disabled = false; // Habilita checkboxes
+    } else {
+      campo.readOnly = false; // Torna campos de texto e e-mail editáveis
+    }
+  });
+  btnBuscaCep.style.display = 'inline-block'; // Remove o estilo de display 'none'
+  btnBuscaCep.removeAttribute('hidden'); // Remove o atributo 'hidden', caso esteja presente
+  // Exibe o botão de salvar e oculta o botão de editar (se necessário)
+  document.getElementById('salvarBtn').style.display = 'inline-block';
 }
 
-function habilitarEdicao() {
-  const campos = document.querySelectorAll('#form input[type="text"], #form input[type="email"]');
-  campos.forEach(campo => campo.readOnly = false);
-  document.getElementById('salvarBtn').style.display = 'inline-block';
+// Exibir um alerta caso nenhum checkbox estiver selecionado
+function validarCheckboxes() {
+  // Seleciona os checkboxes
+  const checkboxes = document.querySelectorAll('#doador, #beneficiario');
+  const algumSelecionado = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+  if (!algumSelecionado) {
+    alert('Por favor, selecione ao menos uma das opções: "Doar tintas" ou "Receber tintas".');
+    return false; // Impede o envio do formulário
+  }
+  return true; // Permite o envio do formulário
 }

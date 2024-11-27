@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 16/11/2024 às 22:29
+-- Tempo de geração: 27/11/2024 às 14:02
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "-03:00";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -18,7 +18,7 @@ SET time_zone = "-03:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `banco_de_tintas_5`
+-- Banco de dados: `banco_de_tintas`
 --
 
 DELIMITER $$
@@ -77,6 +77,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `mesclar_tintas` (IN `id_tinta1` INT
 	UPDATE Tintas SET excluido = 1 WHERE id_tintas IN (id_tinta1, id_tinta2);
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `procurar_tinta` (IN `nome_buscado` VARCHAR(50))   BEGIN
+  SELECT * FROM Tintas
+  WHERE nome_tintas LIKE CONCAT('%', nome_buscado, '%');
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_enviar_notificacao_aprovacao` (IN `id_solicitacao` INT)   BEGIN
   DECLARE beneficiario_email VARCHAR(100);
 
@@ -95,6 +100,20 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `acessos`
+--
+
+CREATE TABLE `acessos` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `tipo_acesso` enum('Login','Exclusão') NOT NULL,
+  `sucesso` tinyint(1) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `analise`
 --
 
@@ -103,6 +122,7 @@ CREATE TABLE `analise` (
   `id_gestor` int(11) DEFAULT NULL,
   `id_solicitacao` int(11) DEFAULT NULL,
   `status_solicitacao` enum('Em analise','Aprovado','Parcialmente aprovado','Negado') NOT NULL DEFAULT 'Em analise',
+  `data_analise` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `justificativa` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -135,20 +155,6 @@ CREATE TABLE `doacao` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `doacao_feedback`
---
-
-CREATE TABLE `doacao_feedback` (
-  `id_feedback` int(11) NOT NULL,
-  `id_doacao` int(11) DEFAULT NULL,
-  `avaliacao` int(1) DEFAULT NULL,
-  `feedback` varchar(200) DEFAULT NULL,
-  `sugestoes` varchar(200) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estrutura para tabela `doacao_tintas`
 --
 
@@ -167,27 +173,11 @@ CREATE TABLE `doacao_tintas` (
 CREATE TABLE `entrega` (
   `id_entrega` int(11) NOT NULL,
   `id_analise` int(11) DEFAULT NULL,
-  `id_solicitacao` int(11) DEFAULT NULL,
   `id_monitor` int(11) DEFAULT NULL,
-  `id_beneficiario` int(11) DEFAULT NULL,
   `dia_semana_entrega` int(11) DEFAULT NULL,
   `horario_entrega` int(11) DEFAULT NULL,
   `status_entrega` enum('Agendado','Concluído','Cancelado') DEFAULT 'Agendado',
   `local_entrega` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `entrega_feedback`
---
-
-CREATE TABLE `entrega_feedback` (
-  `id_feedback` int(11) NOT NULL,
-  `id_entrega` int(11) DEFAULT NULL,
-  `avaliacao` int(1) DEFAULT NULL,
-  `feedback` varchar(200) DEFAULT NULL,
-  `sugestoes` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -307,8 +297,16 @@ CREATE TABLE `usuarios` (
   `senha_hash` varchar(255) DEFAULT NULL,
   `eh_empresa` tinyint(4) DEFAULT 0,
   `usuario_documento` varchar(14) DEFAULT NULL,
-  `telefone` varchar(11) DEFAULT NULL
+  `telefone` varchar(11) DEFAULT NULL,
+  `ativo` tinyint(4) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `usuario_nome`, `usuario_cep`, `usuario_endereco`, `usuario_endereco_num`, `usuario_endereco_complemento`, `usuario_bairro`, `usuario_cidade`, `usuario_estado`, `usuario_email`, `senha_hash`, `eh_empresa`, `usuario_documento`, `telefone`, `ativo`) VALUES
+(1, 'Doador Anônimo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, 0, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -322,8 +320,22 @@ CREATE TABLE `usuario_tipos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Despejando dados para a tabela `usuario_tipos`
+--
+
+INSERT INTO `usuario_tipos` (`usuario_id`, `tipo`) VALUES
+(1, 'Doador');
+
+--
 -- Índices para tabelas despejadas
 --
+
+--
+-- Índices de tabela `acessos`
+--
+ALTER TABLE `acessos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Índices de tabela `analise`
@@ -339,14 +351,8 @@ ALTER TABLE `analise`
 ALTER TABLE `doacao`
   ADD PRIMARY KEY (`id_doacao`),
   ADD KEY `id_doador` (`id_doador`),
-  ADD KEY `id_monitor` (`id_monitor`);
-
---
--- Índices de tabela `doacao_feedback`
---
-ALTER TABLE `doacao_feedback`
-  ADD PRIMARY KEY (`id_feedback`),
-  ADD KEY `id_doacao` (`id_doacao`);
+  ADD KEY `id_monitor` (`id_monitor`),
+  ADD KEY `idx_doacao_data` (`data_doacao`);
 
 --
 -- Índices de tabela `doacao_tintas`
@@ -361,16 +367,7 @@ ALTER TABLE `doacao_tintas`
 ALTER TABLE `entrega`
   ADD PRIMARY KEY (`id_entrega`),
   ADD KEY `id_analise` (`id_analise`),
-  ADD KEY `id_solicitacao` (`id_solicitacao`),
-  ADD KEY `id_monitor` (`id_monitor`),
-  ADD KEY `id_beneficiario` (`id_beneficiario`);
-
---
--- Índices de tabela `entrega_feedback`
---
-ALTER TABLE `entrega_feedback`
-  ADD PRIMARY KEY (`id_feedback`),
-  ADD KEY `id_entrega` (`id_entrega`);
+  ADD KEY `id_monitor` (`id_monitor`);
 
 --
 -- Índices de tabela `entrega_tintas`
@@ -422,7 +419,8 @@ ALTER TABLE `tintas`
 -- Índices de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_usuario_email` (`usuario_email`);
 
 --
 -- Índices de tabela `usuario_tipos`
@@ -433,6 +431,12 @@ ALTER TABLE `usuario_tipos`
 --
 -- AUTO_INCREMENT para tabelas despejadas
 --
+
+--
+-- AUTO_INCREMENT de tabela `acessos`
+--
+ALTER TABLE `acessos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `analise`
@@ -447,22 +451,10 @@ ALTER TABLE `doacao`
   MODIFY `id_doacao` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `doacao_feedback`
---
-ALTER TABLE `doacao_feedback`
-  MODIFY `id_feedback` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de tabela `entrega`
 --
 ALTER TABLE `entrega`
   MODIFY `id_entrega` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `entrega_feedback`
---
-ALTER TABLE `entrega_feedback`
-  MODIFY `id_feedback` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `solicitacao`
@@ -480,11 +472,17 @@ ALTER TABLE `tintas`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restrições para tabelas despejadas
 --
+
+--
+-- Restrições para tabelas `acessos`
+--
+ALTER TABLE `acessos`
+  ADD CONSTRAINT `acessos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `analise`
@@ -501,12 +499,6 @@ ALTER TABLE `doacao`
   ADD CONSTRAINT `doacao_ibfk_2` FOREIGN KEY (`id_monitor`) REFERENCES `monitor` (`id_monitor`);
 
 --
--- Restrições para tabelas `doacao_feedback`
---
-ALTER TABLE `doacao_feedback`
-  ADD CONSTRAINT `doacao_feedback_ibfk_1` FOREIGN KEY (`id_doacao`) REFERENCES `doacao` (`id_doacao`);
-
---
 -- Restrições para tabelas `doacao_tintas`
 --
 ALTER TABLE `doacao_tintas`
@@ -518,15 +510,7 @@ ALTER TABLE `doacao_tintas`
 --
 ALTER TABLE `entrega`
   ADD CONSTRAINT `entrega_ibfk_1` FOREIGN KEY (`id_analise`) REFERENCES `analise` (`id_analise`),
-  ADD CONSTRAINT `entrega_ibfk_2` FOREIGN KEY (`id_solicitacao`) REFERENCES `solicitacao` (`id_solicitacao`),
-  ADD CONSTRAINT `entrega_ibfk_3` FOREIGN KEY (`id_monitor`) REFERENCES `monitor` (`id_monitor`),
-  ADD CONSTRAINT `entrega_ibfk_4` FOREIGN KEY (`id_beneficiario`) REFERENCES `usuarios` (`id`);
-
---
--- Restrições para tabelas `entrega_feedback`
---
-ALTER TABLE `entrega_feedback`
-  ADD CONSTRAINT `entrega_feedback_ibfk_1` FOREIGN KEY (`id_entrega`) REFERENCES `entrega` (`id_entrega`);
+  ADD CONSTRAINT `entrega_ibfk_2` FOREIGN KEY (`id_monitor`) REFERENCES `monitor` (`id_monitor`);
 
 --
 -- Restrições para tabelas `entrega_tintas`
