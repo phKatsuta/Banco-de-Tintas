@@ -100,7 +100,7 @@ if (!function_exists('gerarMenuPerfil')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco de Tintas</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/index.css"> <!-- Referência ao CSS -->
+    <link rel="stylesheet" href="<?= BASE_URL ?>../css/index.css"> <!-- Referência ao CSS -->
 </head>
 <body>
 
