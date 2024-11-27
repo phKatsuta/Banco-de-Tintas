@@ -1,54 +1,71 @@
 <?php
-require_once '../includes/verifica_gestor.php';
+require_once '../includes/verifica_gestor.php';  // Verifica se o usuário tem permissões de gestor
 
-// Verificar se os dados foram enviados corretamente
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Verifica se o formulário foi enviado
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obter os dados do formulário
     $id_solicitacao = $_POST['id_solicitacao'];
-    $id_analise = $_POST['id_analise'];
-    $status_solicitacao = $_POST['status_solicitacao'];
-    $justificativa_analise = isset($_POST['justificativa_analise']) ? $_POST['justificativa_analise'] : '';
+    $status_analise = $_POST['status_analise'];
+    $justificativa_analise = $_POST['justificativa_analise'];
 
-    // Validar os dados
-    if (empty($status_solicitacao)) {
-        echo "Por favor, selecione o status da solicitação.";
-        exit();
-    }
+    // O ID do gestor é o ID do usuário logado
+    $id_gestor = $_SESSION['id'];  // Supondo que o ID do usuário logado seja armazenado na sessão
 
     try {
-        // Atualizar o status da solicitação na tabela 'Analise'
-        $stmt = $pdo->prepare("
-            UPDATE Analise 
-            SET status_solicitacao = :status_solicitacao,
-                justificativa = :justificativa_analise,
-                data_analise = NOW()
-            WHERE id_analise = :id_analise
-        ");
-        $stmt->execute([
-            ':status_solicitacao' => $status_solicitacao,
-            ':justificativa_analise' => $justificativa_analise,
-            ':id_analise' => $id_analise
-        ]);
+        // Iniciar uma transação
+        $pdo->beginTransaction();
 
-        // Se a solicitação foi aprovada ou parcialmente aprovada, pode ser necessário agendar a entrega
-        if ($status_solicitacao == 'Aprovado' || $status_solicitacao == 'Parcialmente aprovado') {
-            // Criar o agendamento de entrega ou marcar como pendente para o beneficiário
-            // Aqui você pode redirecionar o Gestor para a página de agendamento de entrega
-            // Ou, se necessário, registrar mais informações na tabela 'Entrega'
-            // Por enquanto, vamos apenas informar que a solicitação foi analisada
-            // O processo de entrega será feito em outra parte do sistema.
+        // Verifica se já existe uma entrada na tabela 'Analise' para essa solicitação
+        $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM Analise WHERE id_solicitacao = :id_solicitacao");
+        $stmt_check->bindParam(':id_solicitacao', $id_solicitacao);
+        $stmt_check->execute();
+        $exists = $stmt_check->fetchColumn();
+
+        // Se já existe uma análise, atualiza; caso contrário, insere uma nova entrada
+        if ($exists) {
+            // Atualiza o status e a justificativa na tabela 'Analise'
+            $stmt = $pdo->prepare("
+                UPDATE Analise
+                SET 
+                    id_gestor = :id_gestor,
+                    status_solicitacao = :status_analise,
+                    data_analise = NOW()
+                    justificativa = :justificativa_analise,
+                WHERE id_solicitacao = :id_solicitacao
+            ");
+            $stmt->bindParam(':id_gestor', $id_gestor);
+            $stmt->bindParam(':id_solicitacao', $id_solicitacao);
+            $stmt->bindParam(':status_analise', $status_analise);
+            $stmt->bindParam(':justificativa_analise', $justificativa_analise);
+            $stmt->execute();
+        } else {
+            // Se não existe, insere uma nova análise para a solicitação
+            $stmt = $pdo->prepare("
+                INSERT INTO Analise (id_solicitacao, status_solicitacao, justificativa, id_gestor, data_analise)
+                VALUES (:id_solicitacao, :status_analise, :justificativa_analise, :id_gestor, NOW())
+            ");
+            $stmt->bindParam(':id_gestor', $id_gestor);
+            $stmt->bindParam(':id_solicitacao', $id_solicitacao);
+            $stmt->bindParam(':status_analise', $status_analise);
+            $stmt->bindParam(':justificativa_analise', $justificativa_analise);
+            $stmt->execute();
         }
 
-        // Redirecionar de volta para a página de análise de solicitações
-        header("Location: analisar_solicitacao.php");
-        exit();
+        // Confirma a transação
+        $pdo->commit();
+
+        // Redireciona de volta para a página de análise com uma mensagem de sucesso
+        header('Location: analisar_solicitacao.php?success=1');
+        exit;
 
     } catch (Exception $e) {
-        echo "Erro ao processar a análise: " . $e->getMessage();
-        exit();
+        // Se ocorrer um erro, reverter a transação
+        $pdo->rollBack();
+        // Exibir a mensagem de erro
+        echo 'Erro: ' . $e->getMessage();
     }
 } else {
-    // Caso a requisição não seja POST, redireciona para a página de análise
-    header("Location: analisar_solicitacao.php");
-    exit();
+    // Se o formulário não foi enviado corretamente, redireciona de volta
+    header('Location: analisar_solicitacao.php?error=1');
+    exit;
 }

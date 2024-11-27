@@ -1,12 +1,9 @@
 <?php
-require_once  '../includes/gera_menu.php';
+include '../includes/verifica_beneficiario.php';
 
-// Obter o ID do usuário logado
-$usuario_id = $_SESSION['usuario_id'];
-
-// Verificar se o usuário está logado e se é do tipo 'Beneficiario'
-if (!isset($_SESSION['usuario_id']) || !in_array('Beneficiario', getUserTypes($pdo, $_SESSION['usuario_id']))) {
-    header("Location: login.php");
+// Verificar se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location:" . BASE_URL . "login.php");
     exit();
 }
 

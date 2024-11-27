@@ -1,38 +1,55 @@
 <?php
-include '../includes/gera_menu.php';
+include '../includes/verifica_beneficiario.php';
 
-// Verificar se o formulário foi enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $justificativa = isset($_POST['justificativa']) ? $_POST['justificativa'] : '';
-    $tintas_selecionadas = isset($_POST['tintas']) ? $_POST['tintas'] : [];
+// Verificar se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location:" . BASE_URL . "login.php");
+    exit();
+}
 
-    // Iniciar transação para garantir a integridade dos dados
+// Verificar se o formulário foi submetido
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
+        // Iniciar transação
         $pdo->beginTransaction();
 
-        // Inserir a solicitação na tabela 'Solicitacao'
-        $stmt = $pdo->prepare("INSERT INTO Solicitacao (id_beneficiario, data_solicitacao, justificativa) VALUES (?, NOW(), ?)");
-        $stmt->execute([$usuario_id, $justificativa]);
-        $solicitacao_id = $pdo->lastInsertId(); // Obter o ID da solicitação recém-criada
+        // Inserir a solicitação na tabela Solicitacao
+        $stmt = $pdo->prepare("INSERT INTO Solicitacao (id_beneficiario, justificativa, data_solicitacao) VALUES (:id_beneficiario, :justificativa, NOW())");
+        $stmt->execute([
+            ':id_beneficiario' => $_SESSION['usuario_id'],
+            ':justificativa' => $_POST['justificativa'],
+        ]);
 
-        // Inserir as tintas solicitadas na tabela 'Solicitacao_tintas'
-        foreach ($tintas_selecionadas as $id_tinta => $dados) {
-            if (isset($dados['selecionada']) && isset($dados['quantidade']) && $dados['quantidade'] > 0) {
-                $stmt = $pdo->prepare("INSERT INTO Solicitacao_tintas (id_solicitacao, id_tintas, quantidade) VALUES (?, ?, ?)");
-                $stmt->execute([$solicitacao_id, $id_tinta, $dados['quantidade']]);
+        // Obter o id_solicitacao gerado
+        $id_solicitacao = $pdo->lastInsertId();
+
+        // Inserir dados na tabela Analise com status 'Em analise'
+        $stmt = $pdo->prepare("INSERT INTO Analise (id_solicitacao, status_solicitacao) VALUES (:id_solicitacao, 'Em analise')");
+        $stmt->execute([
+            ':id_solicitacao' => $id_solicitacao
+        ]);
+
+        // Inserir as tintas solicitadas na tabela Solicitacao_tintas
+        if (isset($_POST['tintas'])) {
+            $stmt = $pdo->prepare("INSERT INTO Solicitacao_tintas (id_solicitacao, id_tintas, quantidade) VALUES (:id_solicitacao, :id_tintas, :quantidade)");
+            foreach ($_POST['tintas'] as $id_tinta => $dados) {
+                if (isset($dados['selecionada']) && isset($dados['quantidade']) && $dados['quantidade'] > 0) {
+                    $stmt->execute([
+                        ':id_solicitacao' => $id_solicitacao,
+                        ':id_tintas' => $id_tinta,
+                        ':quantidade' => $dados['quantidade'],
+                    ]);
+                }
             }
         }
 
-        // Commit na transação
+        // Commit da transação
         $pdo->commit();
-
         // Redirecionar para a página inicial após sucesso
-        header("Location: ../index.php?solicitacao_success=1");
-        exit();
-    } catch (Exception $e) {
-        // Se ocorrer um erro, desfazemos a transação
+        echo "<p>Alterações salvas com sucesso! Você será redirecionado em 3 segundos.</p>";
+        echo "<meta http-equiv='refresh' content='3;url=../index.php'>";
+    } catch (PDOException $e) {
         $pdo->rollBack();
-        echo "Erro: " . $e->getMessage();
+        echo "Erro ao atualizar os tipos de usuário: " . $e->getMessage();
     }
 }
-?>

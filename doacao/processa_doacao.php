@@ -1,4 +1,6 @@
 <?php
+require_once '../includes/verifica_doador.php';
+
 // Função para validar e processar o formulário de doação
 function processDonationForm($pdo, $form_data, $usuario_id, $tipos_usuario)
 {

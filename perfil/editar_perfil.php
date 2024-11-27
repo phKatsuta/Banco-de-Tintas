@@ -6,7 +6,7 @@ include '../includes/function_buscarEnderecoViaCep.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header('Location: ../login.php');
     exit();
 }
 

@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/gera_menu.php';
+require_once '../includes/verifica_doador.php';
 require_once 'processa_doacao.php';
 
 // Verificar se o usuário está logado
@@ -10,9 +10,6 @@ if (!isset($_SESSION['usuario_id'])) {
 
 // Obter o ID do usuário logado
 $usuario_id = $_SESSION['usuario_id'];
-
-// Obter os tipos de usuário logado
-$tipos_usuario = getUserTypes($pdo, $usuario_id);
 
 // Processar formulário de doação
 $result = [];

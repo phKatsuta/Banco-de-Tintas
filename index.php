@@ -75,5 +75,4 @@ include './templates/header.php';
         </section>
     </main>
     <script src="./SCRIPT/script.js"></script>
-    <script scr="./perfil/script_modais.hs"></script>
     <?php include './templates/footer.php'; ?>
