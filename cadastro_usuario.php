@@ -36,11 +36,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
+    // Validar se o email já existe
+    $check_email = $conn->prepare("SELECT id FROM Usuarios WHERE usuario_email = ?");
+    $check_email->bind_param("s", $usuario_email);
+    $check_email->execute();
+    $check_email_result = $check_email->get_result();
+    
+    if ($check_email_result->num_rows > 0) {
+        echo "<script>alert('E-mail já cadastrado!'); window.location.href='cadastro_usuario.php';</script>";
+        exit;
+    }
+
     // Gerar hash da senha
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
     // Preparar a consulta SQL com prepared statements
-    $stmt = $conn->prepare("INSERT INTO usuarios (usuario_nome, usuario_email, senha, usuario_cep, usuario_endereco, usuario_endereco_num, usuario_endereco_complemento, usuario_bairro, usuario_cidade, usuario_estado, usuario_documento, telefone, eh_empresa) 
+    $stmt = $conn->prepare("INSERT INTO Usuarios (usuario_nome, usuario_email, senha_hash, usuario_cep, usuario_endereco, usuario_endereco_num, usuario_endereco_complemento, usuario_bairro, usuario_cidade, usuario_estado, usuario_documento, telefone, eh_empresa) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if ($stmt) {
@@ -51,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Executar a consulta
         if ($stmt->execute()) {
             // Redirecionar para a página de login após sucesso
-            echo "<script>alert('Cadastro realizado com sucesso!'); window.location.href='login.php';</script>";
+            echo "<script>alert('Cadastro realizado com sucesso!'); window.location.href='single-blog.html';</script>";
             exit;
         } else {
             // Caso haja erro na execução
