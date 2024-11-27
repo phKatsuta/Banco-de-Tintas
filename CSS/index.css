@@ -1,4 +1,4 @@
-/* Definindo o fundo da página e a cor do texto */
+/* Estilos gerais para fundo escuro */
 body {
     background-color: #000;
     color: #fff;
@@ -7,41 +7,79 @@ body {
     padding: 0;
 }
 
-.container {
-    margin: 30px auto;
-    padding: 20px;
-}
-
-/* Estilizando as seções principais */
-section {
-    background-color: #222;
-    margin-bottom: 30px;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-h2, h3 {
-    color: #fff;
-}
-
-/* Estilizando o menu */
-.footer-section {
+.hero {
+    text-align: center;
+    padding: 50px;
     background-color: #111;
-    color: #aaa;
+    color: #fff;
+    border-bottom: 2px solid #444;
+}
+
+.user-menu, .perfil-menu {
+    background-color: #222;
     padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
 }
 
-.footer-section a {
-    color: #bbb;
-    text-decoration: none;
-}
-
-.footer-section a:hover {
+.user-menu h2, .perfil-menu h3 {
     color: #fff;
 }
 
-/* Modal */
+.user-menu ul, .perfil-menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.user-menu li, .perfil-menu li {
+    padding: 10px 0;
+}
+
+.user-menu a, .perfil-menu a {
+    color: #ddd;
+    text-decoration: none;
+    display: block;
+}
+
+.user-menu a:hover, .perfil-menu a:hover {
+    color: #fff;
+    background-color: #444;
+    padding-left: 10px;
+}
+
+.logout-form {
+    margin-top: 20px;
+}
+
+.logout-btn {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Ajustes nos botões */
+.btn {
+    background-color: #0056b3;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background-color: #004a8f;
+}
+
+/* Estilo do modal (se houver) */
 .modal-content {
     background-color: #333;
     color: #fff;
@@ -73,62 +111,4 @@ h2, h3 {
 
 .modal-form button:hover {
     background-color: #004a8f;
-}
-
-/* Ticker de notícias */
-.latest-news-section {
-    background-color: #333;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.news-ticker-contant .nt-item {
-    padding: 8px 0;
-    color: #fff;
-}
-
-.news-ticker-contant .new {
-    color: green;
-}
-
-.news-ticker-contant .strategy {
-    color: #FFA500;
-}
-
-.news-ticker-contant .racing {
-    color: #ff6347;
-}
-
-/* Adicionando um efeito para as caixas */
-section:hover {
-    background-color: #444;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-footer {
-    background-color: #111;
-    padding: 20px;
-    text-align: center;
-}
-
-footer .copyright {
-    color: #aaa;
-}
-
-footer .footer-menu {
-    list-style: none;
-    padding: 0;
-}
-
-footer .footer-menu li {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-footer .footer-menu li a {
-    color: #bbb;
-}
-
-footer .footer-menu li a:hover {
-    color: #fff;
 }
