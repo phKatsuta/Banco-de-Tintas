@@ -3,7 +3,7 @@
 $host = "localhost";
 $username = "root";
 $password = "";
-$dbname = "banco_de_tintas_5";
+$dbname = "banco_de_tintas";
 
 try {
     // Cria uma nova instância de PDO

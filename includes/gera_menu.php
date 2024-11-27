@@ -66,8 +66,7 @@ if (!function_exists(function: 'gerarMenuPerfil')) {
         echo '<h3>Menu de Perfil</h3>';
         echo '<ul>';
         echo '<li><a href="' . BASE_URL . 'perfil/editar_perfil.php">Editar Perfil</a></li>';
-        echo '<li><a href="' . BASE_URL . 'perfil/adicionar_permissao.php">Adicionar Permissão</a></li>';
-        echo '<li><a href="' . BASE_URL . 'perfil/alterar_para_organizacao.php">Alterar para Organização</a></li>';
+        echo '<li><a href="' . BASE_URL . 'perfil/alterar_senha.php">Alterar senha</a></li>';
         echo '<li><a href="' . BASE_URL . 'perfil/excluir_conta.php">Excluir Conta</a></li>';
         echo '</ul>';
         echo '</nav>';

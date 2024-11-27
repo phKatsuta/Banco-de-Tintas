@@ -134,15 +134,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     <?php endif; ?>
 
-    <form method="POST" action="" id="cadastroForm">
+    <form method="POST" action="" id="form">
         <label for="usuario_nome">Nome:</label>
         <input type="text" name="usuario_nome" id="usuario_nome" required><br>
 
         <!--- Endereço --->
         <label for="cep">CEP:</label>
-        <input type="text" name="usuario_cep" id="cep">
+        <input type="text" name="usuario_cep" id="cep" oninput="aplicarMascaraCEP(this)" placeholder="Digite o CEP">
+
         <button type="button" id="buscarCep">Buscar CEP</button>
         <div id="loading-indicator" style="display: none;">Carregando...</div><br>
+
         <label for="usuario_endereco">Endereço:</label>
         <input type="text" name="usuario_endereco" id="usuario_endereco" readonly>
 
@@ -172,10 +174,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="password" name="confirma_senha" id="confirma_senha" required><br>
 
         <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
-        <input type="text" name="usuario_documento" id="usuario_documento" maxlength="18"
+        <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)" maxlength="18"
             placeholder="Digite CPF ou CNPJ">
-        <span id="usuario_documento_Error" style="color: red; display: none;">CPF ou CNPJ é obrigatório para
-            organizações.</span><br>
+        <span id=" usuario_documento_Error" style="color: red; display: none;">CPF ou CNPJ é obrigatório para
+        organizações.</span><br>
 
         <label for="telefone">Telefone:</label>
         <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX"><br>
@@ -201,7 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Cadastrar</button>
     </form>
-    
+
     <script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
 
 </body>
