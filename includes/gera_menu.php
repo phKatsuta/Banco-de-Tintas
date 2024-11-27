@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
 session_start();
-// Função para obter os tipos de usuário do banco
+
+// Função para obter os tipos de usuário diretamente do banco
 if (!function_exists('getUserTypes')) {
     function getUserTypes($pdo, $usuario_id)
     {
@@ -17,8 +18,8 @@ if (!function_exists('getUserTypes')) {
     }
 }
 
-// Função para gerar o menu principal (fora da área de perfil)
-if (!function_exists(function: 'gerarMenuPrincipal')) {
+// Função para gerar o menu principal com base nos tipos de usuário
+if (!function_exists('gerarMenuPrincipal')) {
     function gerarMenuPrincipal($tipos_usuario, $usuario_nome = 'Usuário')
     {
         echo '<nav class="user-menu">';
@@ -28,25 +29,30 @@ if (!function_exists(function: 'gerarMenuPrincipal')) {
 
         // Menu para Doador
         if (in_array('Doador', $tipos_usuario)) {
+            echo '<p>Doador</p>';
             echo '<li><a href="' . BASE_URL . 'doacao/minhas_doacoes.php">Minhas Doações</a></li>';
             echo '<li><a href="' . BASE_URL . 'doacao/doacao.php">Cadastrar Doações</a></li>';
         }
 
         // Menu para Beneficiário
         if (in_array('Beneficiario', $tipos_usuario)) {
+            echo '<p>Beneficiário</p>';
             echo '<li><a href="' . BASE_URL . 'solicitacao/minhas_solicitacoes.php">Minhas Solicitações</a></li>';
             echo '<li><a href="' . BASE_URL . 'solicitacao/solicitacao.php">Solicitar Tintas</a></li>';
         }
 
         // Menu para Gestor
         if (in_array('Gestor', $tipos_usuario)) {
-            echo '<li><a href="' . BASE_URL . 'gestao/analise.php">Gestão</a></li>';
+            echo '<p>Gestor</p>';
             echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
+            echo '<li><a href="' . BASE_URL . 'gestao/analisar_solicitacao.php">Analisar Solicitações</a></li>';
+            echo '<li><a href="' . BASE_URL . 'gestao/mistura_tintas.php">Misturar Tintas</a></li>';
         }
 
         // Menu para Monitor
         if (in_array('Monitor', $tipos_usuario)) {
-            echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
+            echo '<p>Monitor</p>';
+            echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Analisar Doações</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/monitores.php">Monitoramento</a></li>';
         }
 
@@ -59,7 +65,7 @@ if (!function_exists(function: 'gerarMenuPrincipal')) {
 }
 
 // Função para gerar o menu de perfil
-if (!function_exists(function: 'gerarMenuPerfil')) {
+if (!function_exists('gerarMenuPerfil')) {
     function gerarMenuPerfil()
     {
         echo '<nav class="perfil-menu">';
@@ -76,7 +82,7 @@ if (!function_exists(function: 'gerarMenuPerfil')) {
 // Controle de interface para o usuário logado
 if (isset($_SESSION['usuario_id'])) {
     $usuario_id = $_SESSION['usuario_id'];
-    $tipos_usuario = getUserTypes($pdo, $usuario_id);
+    $tipos_usuario = getUserTypes($pdo, $usuario_id); // Verificação dos tipos diretamente no banco
     $usuario_nome = $_SESSION['usuario_nome'] ?? 'Usuário';
 
     // Exibe o menu principal
@@ -107,4 +113,3 @@ if (isset($_SESSION['usuario_id'])) {
     echo '<button class="btn" onclick="openModal()">Acessar</button>';
     echo '</section>';
 }
-

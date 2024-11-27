@@ -1,13 +1,5 @@
 <?php
-require_once '../includes/config.php';
-session_start();
-
-// Verificar permissão
-if (!isset($_SESSION['usuario_id']) || 
-    !in_array('Gestor', $_SESSION['user_types']) && !in_array('Monitor', $_SESSION['user_types'])) {
-    header("Location: login.php");
-    exit();
-}
+require_once '../includes/verifica_gestor.php';
 
 // Verificar se o botão de confirmação foi pressionado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
