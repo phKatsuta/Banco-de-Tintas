@@ -2,7 +2,7 @@
 // Configurações de conexão com o banco de dados
 $servername = "localhost";  // Alterar para o seu servidor de banco de dados
 $username = "root";         // Usuário do banco de dados
-$password = "root";             // Senha do banco de dados
+$password = "";             // Senha do banco de dados
 $dbname = "banco_de_tintas";  // Nome do banco de dados
 
 // Criar conexão
