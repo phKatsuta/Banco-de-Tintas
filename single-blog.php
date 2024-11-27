@@ -1,9 +1,3 @@
-//
-
-//[================================================]
-//SALVAR ESSE PROJETO TODO NA PASTA HTDOCS QUANDO FOR EXIBIR
-//[================================================]
-
 <?php
 session_start();
 require 'includes/config.php';

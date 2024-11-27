@@ -1,3 +1,73 @@
+<?php
+// Configurações de conexão com o banco de dados
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "seu_banco_de_dados";
+
+// Criar conexão
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar a conexão
+if ($conn->connect_error) {
+    die("Erro na conexão com o banco de dados.");
+}
+
+// Verificar se o formulário foi enviado
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $usuario_nome = trim($_POST['usuario_nome']);
+    $usuario_email = trim($_POST['usuario_email']);
+    $senha = trim($_POST['senha']);
+    $usuario_cep = trim($_POST['usuario_cep']);
+    $usuario_endereco = trim($_POST['usuario_endereco']);
+    $usuario_endereco_num = trim($_POST['usuario_endereco_num']);
+    $usuario_endereco_complemento = trim($_POST['usuario_endereco_complemento']);
+    $usuario_bairro = trim($_POST['usuario_bairro']);
+    $usuario_cidade = trim($_POST['usuario_cidade']);
+    $usuario_estado = trim($_POST['usuario_estado']);
+    $usuario_documento = trim($_POST['usuario_documento']);
+    $telefone = trim($_POST['telefone']);
+    $eh_empresa = intval($_POST['eh_empresa']);
+
+    // Validação simples
+    if (!filter_var($usuario_email, FILTER_VALIDATE_EMAIL)) {
+        header("Location: cadastro_usuario.php?error=Email inválido");
+        exit;
+    }
+
+    // Gerar hash seguro da senha
+    $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+
+    // Usar prepared statements para inserir dados
+    $stmt = $conn->prepare("INSERT INTO usuarios (usuario_nome, usuario_email, senha, usuario_cep, usuario_endereco, usuario_endereco_num, usuario_endereco_complemento, usuario_bairro, usuario_cidade, usuario_estado, usuario_documento, telefone, eh_empresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    
+    if ($stmt) {
+        $stmt->bind_param("sssssssssssii", 
+            $usuario_nome, $usuario_email, $senha_hash, $usuario_cep, $usuario_endereco, 
+            $usuario_endereco_num, $usuario_endereco_complemento, $usuario_bairro, 
+            $usuario_cidade, $usuario_estado, $usuario_documento, $telefone, $eh_empresa
+        );
+
+        if ($stmt->execute()) {
+            header("Location: login.html?success=1");
+            exit;
+        } else {
+            header("Location: cadastro_usuario.php?error=Erro ao cadastrar");
+            exit;
+        }
+
+        $stmt->close();
+    } else {
+        header("Location: cadastro_usuario.php?error=Erro na preparação da consulta");
+        exit;
+    }
+}
+
+// Fechar a conexão
+$conn->close();
+?>
+
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
