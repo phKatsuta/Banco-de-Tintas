@@ -17,6 +17,7 @@ if (!function_exists('getUserTypes')) {
         return $tipos;
     }
 }
+
 function getUserById($pdo, $userId) {
     try {
         $sql = "SELECT * FROM Usuarios WHERE id = ?";
@@ -40,7 +41,7 @@ if (!function_exists('gerarMenuPrincipal')) {
     function gerarMenuPrincipal($tipos_usuario, $usuario_nome = 'Usuário')
     {
         echo '<nav class="user-menu">';
-        echo '<h2>Bem vindo, ' . htmlspecialchars($usuario_nome) . '!</h2>';
+        echo '<h2>Bem-vindo, ' . htmlspecialchars($usuario_nome) . '!</h2>';
         echo '<ul>';
         echo '<li><a href="' . BASE_URL . 'index.php">Início</a></li>';
 
@@ -91,7 +92,19 @@ if (!function_exists('gerarMenuPerfil')) {
         echo '</nav>';
     }
 }
+?>
 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Tintas</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/index.css"> <!-- Referência ao CSS -->
+</head>
+<body>
+
+<?php
 // Controle de interface para o usuário logado
 if (isset($_SESSION['usuario_id'])) {
     $usuario_id = $_SESSION['usuario_id'];
@@ -126,3 +139,7 @@ if (isset($_SESSION['usuario_id'])) {
     echo '<button class="btn" onclick="openModal()">Acessar</button>';
     echo '</section>';
 }
+?>
+
+</body>
+</html>
