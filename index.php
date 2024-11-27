@@ -14,23 +14,36 @@ include './templates/header.php'; // Incluindo o cabeçalho
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link para os seus CSS e os do template -->
-    <link rel="stylesheet" href="./CSS/styles.css">
-    <link rel="stylesheet" href="./CSS/styles_menu.css">
-    <!-- Adicionando os CSS do segundo template -->
+    <meta name="description" content="Banco de Tintas Orgânicas">
+    <meta name="keywords" content="banco de tintas, sustentabilidade, FATEC Jundiaí">
+    <title>Banco de Tintas</title>
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="shortcut icon"/>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/owl.carousel.css"/>
     <link rel="stylesheet" href="css/animate.css"/>
     <link rel="stylesheet" href="css/style.css"/>
-    <title>Banco de Tintas</title>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="./CSS/styles.css">
+    <link rel="stylesheet" href="./CSS/styles_menu.css">
+
 </head>
 
 <body>
+    <!-- Page Preloader -->
     <div id="preloder">
         <div class="loader"></div>
     </div>
 
+    <!-- Main Content -->
     <main class="container">
         <!-- Exibe mensagem de erro no login -->
         <?php if (!empty($error)): ?>
@@ -40,7 +53,7 @@ include './templates/header.php'; // Incluindo o cabeçalho
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->
         <?php require_once 'includes/gera_menu.php'; ?>
 
-        <!-- Modal -->
+        <!-- Modal de Login -->
         <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
             <div class="modal-content">
                 <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -61,12 +74,14 @@ include './templates/header.php'; // Incluindo o cabeçalho
             </div>
         </div>
 
+        <!-- Sobre o Projeto -->
         <section class="about">
             <h2>Sobre o Projeto</h2>
             <p>O Banco de Tintas é uma iniciativa que conecta doadores com beneficiários, promovendo a reutilização de tintas e
                 reduzindo desperdícios. Nosso objetivo é levar cor e vida para aqueles que mais precisam.</p>
         </section>
 
+        <!-- Como Funciona? -->
         <section class="how-it-works">
             <h2>Como Funciona?</h2>
             <div class="steps">
@@ -85,7 +100,7 @@ include './templates/header.php'; // Incluindo o cabeçalho
             </div>
         </section>
 
-        <!-- Latest news section -->
+        <!-- Latest News Section -->
         <div class="latest-news-section">
             <div class="ln-title">Atualizações</div>
             <div class="news-ticker">
@@ -96,11 +111,10 @@ include './templates/header.php'; // Incluindo o cabeçalho
                 </div>
             </div>
         </div>
-        <!-- Latest news section end -->
 
     </main>
 
-    <!-- Footer section -->
+    <!-- Footer Section -->
     <footer class="footer-section">
         <div class="container">
             <ul class="footer-menu">
@@ -113,9 +127,8 @@ include './templates/header.php'; // Incluindo o cabeçalho
             </p>
         </div>
     </footer>
-    <!-- Footer section end -->
 
-    <!--====== Javascripts & Jquery ======-->
+    <!-- Scripts -->
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
