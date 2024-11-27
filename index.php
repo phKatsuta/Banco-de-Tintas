@@ -5,7 +5,7 @@ if (isset($_SESSION['success_message'])) {
     unset($_SESSION['success_message']);
 }
 
-include './templates/header.php';
+include './templates/header.php'; // Incluindo o cabeçalho
 ?>
 
 <!DOCTYPE html>
@@ -14,12 +14,23 @@ include './templates/header.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link para os seus CSS e os do template -->
     <link rel="stylesheet" href="./CSS/styles.css">
     <link rel="stylesheet" href="./CSS/styles_menu.css">
+    <!-- Adicionando os CSS do segundo template -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/owl.carousel.css"/>
+    <link rel="stylesheet" href="css/animate.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
     <title>Banco de Tintas</title>
 </head>
 
 <body>
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
     <main class="container">
         <!-- Exibe mensagem de erro no login -->
         <?php if (!empty($error)): ?>
@@ -52,10 +63,10 @@ include './templates/header.php';
 
         <section class="about">
             <h2>Sobre o Projeto</h2>
-            <p>O Banco de Tintas é uma iniciativa que conecta doadores com beneficiários, promovendo a reutilização de
-                tintas e
+            <p>O Banco de Tintas é uma iniciativa que conecta doadores com beneficiários, promovendo a reutilização de tintas e
                 reduzindo desperdícios. Nosso objetivo é levar cor e vida para aqueles que mais precisam.</p>
         </section>
+
         <section class="how-it-works">
             <h2>Como Funciona?</h2>
             <div class="steps">
@@ -73,7 +84,45 @@ include './templates/header.php';
                 </div>
             </div>
         </section>
+
+        <!-- Latest news section -->
+        <div class="latest-news-section">
+            <div class="ln-title">Atualizações</div>
+            <div class="news-ticker">
+                <div class="news-ticker-contant">
+                    <div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
+                    <div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
+                    <div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
+                </div>
+            </div>
+        </div>
+        <!-- Latest news section end -->
+
     </main>
-    <script src="./SCRIPT/script.js"></script>
-    <script scr="./perfil/script_modais.hs"></script>
-    <?php include './templates/footer.php'; ?>
+
+    <!-- Footer section -->
+    <footer class="footer-section">
+        <div class="container">
+            <ul class="footer-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="review.html">Banco de Tintas</a></li>
+                <li><a href="contact.html">Contato</a></li>
+            </ul>
+            <p class="copyright">
+                Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos os direitos reservados | Este template foi feito por <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+            </p>
+        </div>
+    </footer>
+    <!-- Footer section end -->
+
+    <!--====== Javascripts & Jquery ======-->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.marquee.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <?php include './templates/footer.php'; ?>  <!-- Incluindo o rodapé -->
+</body>
+
+</html>
