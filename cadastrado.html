@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 <head>
 	<title>Game Warrior Template</title>
 	<meta charset="UTF-8">
@@ -8,7 +8,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Favicon -->   
 	<link href="img/favicon.ico" rel="shortcut icon"/>
-
 
 	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
@@ -19,15 +18,12 @@
 	<link rel="stylesheet" href="css/owl.carousel.css"/>
 	<link rel="stylesheet" href="css/style.css"/>
 	<link rel="stylesheet" href="css/animate.css"/>
-	<link rel="stylesheet" href="css/paint-style.css"/>
-
 
 
 	<!--[if lt IE 9]>
 	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-	
 
 </head>
 <body>
@@ -68,48 +64,21 @@
 	<!-- Header section end -->
 
 
-	<!-- Paint Can section -->
-	<section class="paint-can-section">
-		<div class="container">
-			<h2 class="section-title">
-				<a href="single-blog.html" style="text-decoration: none; color: inherit;">Escolha sua cor</a>
-			</h2>
+	<!-- Latest news section -->
+	<div class="latest-news-section">
+		<div class="ln-title">Atualizações</div>
+		<div class="news-ticker">
+			<div class="news-ticker-contant">
+				<div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
+				<div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
+				<div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
+			</div>
 		</div>
-	</section>
+	</div>
+	<!-- Latest news section end -->
+
+
 	
-        
-        <div class="paint-can-container">
-            <!-- Imagem que mudará conforme a seleção -->
-            <img id="paint-can-image" class="paint-can" src="img/review/4.jpg" alt="Paint Can">
-
-            
-            <div class="paint-buttons">
-                <button class="bn632-hover" onclick="changeColor('red')">Red</button>
-<!-- Botões com classes de cores específicas -->
-<button class="bn632-hover red" onclick="changeColor('red')">Vermelho</button>
-<button class="bn632-hover blue" onclick="changeColor('blue')">Azul</button>
-<button class="bn632-hover green" onclick="changeColor('green')">Verde</button>
-<button class="bn632-hover yellow" onclick="changeColor('yellow')">Amarelo</button>
-<button class="bn632-hover black" onclick="changeColor('black')">Preto</button>
-<button class="bn632-hover white" onclick="changeColor('white')">Branco</button>
-<button class="bn632-hover orange" onclick="changeColor('orange')">Laranja</button>
-<button class="bn632-hover pink" onclick="changeColor('pink')">Rosa</button>
-<button class="bn632-hover gray" onclick="changeColor('gray')">Cinza</button>
-<button class="bn632-hover purple" onclick="changeColor('purple')">Roxo</button>
-
-
-
-				
-
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Paint Can section end -->
-
-
-	<!--Paint Can section end-->
-
 	
 	<!-- Footer section -->
 	<footer class="footer-section">
@@ -136,51 +105,5 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/jquery.marquee.min.js"></script>
 	<script src="js/main.js"></script>
-
-	<script>
-		function changeColor(color) {
-  var paintCan = document.getElementById('paint-can-image');
-  
-  // Remover qualquer filtro anterior
-  paintCan.style.filter = '';
-
-  // Definir o filtro para a cor selecionada
-  switch(color) {
-    case 'red':
-      paintCan.style.filter = 'saturate(3) hue-rotate(0deg)';
-      break;
-    case 'blue':
-      paintCan.style.filter = 'saturate(3) hue-rotate(210deg)';
-      break;
-    case 'green':
-      paintCan.style.filter = 'saturate(3) hue-rotate(90deg)';
-      break;
-    case 'yellow':
-      paintCan.style.filter = 'saturate(3) hue-rotate(60deg)';
-      break;
-	  case 'black':
-	  paintCan.style.filter = 'saturate(0.5) brightness(0.4)';
-      break;
-    case 'white':
-      paintCan.style.filter = 'brightness(0.5) grayscale(100%)';
-      break;
-    case 'orange':
-      paintCan.style.filter = 'saturate(3) hue-rotate(30deg)';
-      break;
-    case 'pink':
-      paintCan.style.filter = 'saturate(3) hue-rotate(330deg)';
-      break;
-    case 'gray':
-      paintCan.style.filter = 'grayscale(100%)';
-      break;
-    case 'purple':
-      paintCan.style.filter = 'saturate(3) hue-rotate(270deg)';
-      break;
-  }
-}
-
-	</script>
-	
-
     </body>
 </html>
