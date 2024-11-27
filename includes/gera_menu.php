@@ -17,13 +17,30 @@ if (!function_exists('getUserTypes')) {
         return $tipos;
     }
 }
+function getUserById($pdo, $userId) {
+    try {
+        $sql = "SELECT * FROM Usuarios WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return $result['usuario_nome']; // Retorna o nome correto
+        } else {
+            return null; // Caso o usuário não seja encontrado
+        }
+    } catch (PDOException $e) {
+        echo "Erro ao buscar usuário: " . $e->getMessage();
+        return null;
+    }
+}
 
 // Função para gerar o menu principal com base nos tipos de usuário
 if (!function_exists('gerarMenuPrincipal')) {
     function gerarMenuPrincipal($tipos_usuario, $usuario_nome = 'Usuário')
     {
         echo '<nav class="user-menu">';
-        echo '<h2>Bem-vindo, ' . htmlspecialchars($usuario_nome) . '!</h2>';
+        echo '<h2>Bem vindo, ' . htmlspecialchars($usuario_nome) . '!</h2>';
         echo '<ul>';
         echo '<li><a href="' . BASE_URL . 'index.php">Início</a></li>';
 
@@ -79,7 +96,7 @@ if (!function_exists('gerarMenuPerfil')) {
 if (isset($_SESSION['usuario_id'])) {
     $usuario_id = $_SESSION['usuario_id'];
     $tipos_usuario = getUserTypes($pdo, $usuario_id); // Verificação dos tipos diretamente no banco
-    $usuario_nome = $_SESSION['usuario_nome'] ?? 'Usuário';
+    $usuario_nome = getUserById($pdo, $usuario_id) ?? 'Usuário';
 
     // Exibe o menu principal
     gerarMenuPrincipal($tipos_usuario, $usuario_nome);

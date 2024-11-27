@@ -107,18 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }, 3000); // 3000 milissegundos = 3 segundos
     </script>
 <?php endif; ?>
-
-
-<!DOCTYPE html>
-<html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Banco de Tintas</title>
-</head>
-
-<body>
+<?php include '../templates/header.php' ?>
     <h1>Cadastro - Banco de Tintas</h1>
     <?php if (!empty($errors)): ?>
         <div style="color: red;">
@@ -205,7 +194,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
 
     <script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
-
-</body>
-
-</html>
+    <script type="text/javascript" src="../SCRIPT/script.js"></script>
+    <?php include '../templates/footer.php'; ?>

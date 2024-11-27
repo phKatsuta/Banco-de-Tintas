@@ -1,81 +1,132 @@
 <?php
 require_once '../includes/verifica_gestor.php';
-// Consultar todas as solicitações pendentes de análise
-$stmt = $pdo->prepare("
-    SELECT 
-        s.id_solicitacao, 
-        s.id_beneficiario, 
-        s.data_solicitacao, 
-        s.justificativa, 
-        a.status_solicitacao,
-        a.id_analise,
-        a.justificativa AS justificativa_analise
-    FROM Solicitacao AS s
-    LEFT JOIN Analise AS a ON s.id_solicitacao = a.id_solicitacao
-    WHERE a.status_solicitacao = 'Em analise' OR a.status_solicitacao IS NULL
-");
-$stmt->execute();
-$solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if (!$solicitacoes) {
-    echo "Não há solicitações pendentes para análise.";
-    exit();
+// Consulta para obter as solicitações pendentes
+$stmt_pendentes = $pdo->prepare("
+SELECT 
+    S.id_solicitacao,
+    S.id_beneficiario,
+    U.usuario_nome,
+    S.data_solicitacao,
+    S.justificativa AS justificativa_solicitacao,
+    GROUP_CONCAT(CONCAT(T.id_tintas, ' (', ST.quantidade, ')') SEPARATOR ', ') AS tintas_solicitadas,
+    T.id_tintas,
+    T.quantidade_tintas_disponivel,
+    T.excluido,
+    A.id_gestor,
+    A.status_solicitacao,
+    A.justificativa,
+    A.data_analise
+FROM 
+    Solicitacao S
+INNER JOIN Solicitacao_tintas ST ON S.id_solicitacao = ST.id_solicitacao
+INNER JOIN Tintas T ON ST.id_tintas = T.id_tintas
+INNER JOIN Analise A ON S.id_solicitacao = A.id_solicitacao
+INNER JOIN usuarios U ON S.id_beneficiario = U.id
+WHERE A.status_solicitacao = 'Em analise'
+GROUP BY S.id_solicitacao;
+");
+
+// Preparar e executar a consulta
+$stmt_pendentes->execute();
+$solicitacoes_pendentes = $stmt_pendentes->fetchAll(PDO::FETCH_ASSOC);
+
+// Agrupar as solicitações por ID de solicitação
+$solicitacoes = [];
+foreach ($solicitacoes_pendentes as $solicitacao) {
+    $id_solicitacao = $solicitacao['id_solicitacao'];
+    $solicitacoes[$id_solicitacao][] = $solicitacao;
 }
 
 include '../templates/header.php';
 ?>
 
-<h1>Analisar Solicitações de Retirada de Tinta</h1>
+<h1>Analisar Solicitações</h1>
 
-<?php foreach ($solicitacoes as $solicitacao): ?>
-    <div class="solicitacao">
-        <h2>Solicitação #<?php echo $solicitacao['id_solicitacao']; ?></h2>
-        <p><strong>Beneficiário ID:</strong> <?php echo $solicitacao['id_beneficiario']; ?></p>
-        <p><strong>Data da Solicitação:</strong> <?php echo date('d/m/Y', strtotime($solicitacao['data_solicitacao'])); ?></p>
-        <p><strong>Justificativa:</strong> <?php echo htmlspecialchars($solicitacao['justificativa']); ?></p>
+<details class="solicitacao-dropdown">
+<summary><strong>PENDENTES</strong></summary>
+    <form method="POST" action="analisar_solicitacao_submit.php">
+        <?php if (empty($solicitacoes)): ?>
+            <p>Não existem solicitações a serem analisadas.</p>
+        <?php else: ?>
+            <div class="solicitacao-list">
+                <?php foreach ($solicitacoes as $id_solicitacao => $solicitacoes): ?>
+                    <?php $solicitacao_info = $solicitacoes[0]; // Usamos o primeiro item de cada grupo ?>
 
-        <?php
-        // Consultar as tintas solicitadas
-        $stmt_tintas = $pdo->prepare("
-            SELECT 
-                t.nome_tinta, 
-                st.quantidade
-            FROM Solicitacao_tintas AS st
-            INNER JOIN Tintas AS t ON st.id_tintas = t.id_tintas
-            WHERE st.id_solicitacao = :id_solicitacao
-        ");
-        $stmt_tintas->execute(['id_solicitacao' => $solicitacao['id_solicitacao']]);
-        $tintas = $stmt_tintas->fetchAll(PDO::FETCH_ASSOC);
-        ?>
+                    <!-- Dropdown para cada solicitação -->
+                    <details class="solicitacao-dropdown">
+                        <summary><strong>Solicitação <?php echo htmlspecialchars($solicitacao_info['id_solicitacao']); ?></strong></summary>
 
-        <h3>Tintas Solicitadas</h3>
-        <ul>
-            <?php foreach ($tintas as $tinta): ?>
-                <li><?php echo htmlspecialchars($tinta['nome_tinta']); ?> - Quantidade: <?php echo $tinta['quantidade']; ?> L</li>
-            <?php endforeach; ?>
-        </ul>
+                        <!-- Linha 1: Informações do Beneficiário -->
+                        <div>
+                            <strong>Usuário: </strong><br>
+                            Código: <?php echo htmlspecialchars($solicitacao_info['id_beneficiario']); ?> <br>
+                            Nome: <?php echo htmlspecialchars($solicitacao_info['usuario_nome']); ?><br>
+                        </div>
 
-        <h3>Status da Análise</h3>
-        <form action="analisar_solicitacao_submit.php" method="POST">
-            <input type="hidden" name="id_solicitacao" value="<?php echo $solicitacao['id_solicitacao']; ?>">
-            <input type="hidden" name="id_analise" value="<?php echo $solicitacao['id_analise']; ?>">
-            
-            <label for="status_solicitacao">Status da Solicitação:</label>
-            <select name="status_solicitacao" id="status_solicitacao" required>
-                <option value="Aprovado" <?php echo ($solicitacao['status_solicitacao'] == 'Aprovado') ? 'selected' : ''; ?>>Aprovado</option>
-                <option value="Parcialmente aprovado" <?php echo ($solicitacao['status_solicitacao'] == 'Parcialmente aprovado') ? 'selected' : ''; ?>>Parcialmente aprovado</option>
-                <option value="Negado" <?php echo ($solicitacao['status_solicitacao'] == 'Negado') ? 'selected' : ''; ?>>Negado</option>
-            </select>
-            <br>
+                        <!-- Linha 2: Informações da Solicitação -->
+                        <div>
+                            <strong>Solicitação:</strong><br>
+                            Código: <?php echo htmlspecialchars($solicitacao_info['id_solicitacao']); ?> <br>
+                            Data: <?php echo date('d/m/Y', strtotime($solicitacao_info['data_solicitacao'])); ?> <br>
+                            Justificativa: <?php echo htmlspecialchars($solicitacao_info['justificativa_solicitacao']); ?><br>
+                        </div>
 
-            <label for="justificativa_analise">Justificativa:</label>
-            <textarea name="justificativa_analise" id="justificativa_analise" rows="4" cols="50" placeholder="Caso a solicitação seja negada ou parcialmente aprovada, insira uma justificativa."><?php echo htmlspecialchars($solicitacao['justificativa_analise']); ?></textarea>
-            <br>
+                        <!-- Linha 3: Tintas Solicitadas -->
+                        <div>
+                            <strong>Tintas Solicitadas:</strong>
+                            <ul>
+                                <?php foreach ($solicitacoes as $solicitacao): ?>
+                                    <li>
+                                        Tinta ID: <?php echo $solicitacao['id_tintas']; ?> - <br>
+                                        Quantidade disponível:
+                                        <?php echo number_format($solicitacao['quantidade_tintas_disponivel'], 2, ',', '.'); ?> L
+                                        <?php if ($solicitacao['excluido'] == 1): ?>
+                                            <span style="color: red;">(Tinta acabou)</span>
+                                        <?php endif; ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
 
-            <button type="submit">Registrar Análise</button>
-        </form>
-    </div>
-    <hr>
-<?php endforeach; ?>
+                        <!-- Linha 4: Análise do Gestor -->
+                        <div>
+                            <strong>Análise:</strong>
+                            <?php if ($solicitacao_info['status_solicitacao'] != 'Em analise'): ?>
+                                <!-- Se a solicitação já foi analisada, exibe o ID do gestor e a justificativa -->
+                                Gestor: <?php echo htmlspecialchars($solicitacao_info['id_gestor']); ?> -
+                                Status: <?php echo htmlspecialchars($solicitacao_info['status_solicitacao']); ?> -
+                                Justificativa: <?php echo htmlspecialchars($solicitacao_info['justificativa']); ?> -
+                                Data da Análise: <?php echo date('d/m/Y H:i', strtotime($solicitacao_info['data_analise'])); ?>
+                            <?php else: ?>
+                                <!-- Se ainda está em análise, permite ao gestor alterar o status -->
+                                <form action="processar_analise.php" method="POST">
+                                    <input type="hidden" name="id_solicitacao"
+                                        value="<?php echo $solicitacao_info['id_solicitacao']; ?>">
+                                    <select name="status_analise">
+                                        <option selected disabled>Em analise</option>
+                                        <option value="Aprovada">Aprovado</option>
+                                        <option value="Negada">Negado</option>
+                                        <option value="Parcialmente aprovado">Parcialmente aprovado</option>
+                                    </select>
+                                    <textarea name="justificativa_analise" placeholder="Justifique a análise..."
+                                        required></textarea>
+                                    <button type="submit">Salvar Análise</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
+                    </details>
+
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </form>
+</details>
+<a href="../index.php" class="btn-return">Voltar</a>
 
 <?php include '../templates/footer.php'; ?>
+<?php if (isset($_GET['success'])): ?>
+    <p style="color: green;">Solicitação analisada com sucesso!</p>
+<?php elseif (isset($_GET['error'])): ?>
+    <p style="color: red;">Erro ao processar a solicitação. Tente novamente.</p>
+<?php endif; ?>
