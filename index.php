@@ -64,6 +64,18 @@ require_once 'includes/config.php'; // Configuração do banco de dados
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->
         <?php require_once 'includes/gera_menu.php'; ?>
 
+        <!-- Latest News Section -->
+        <div class="latest-news-section">
+            <div class="ln-title">Atualizações</div>
+            <div class="news-ticker">
+                <div class="news-ticker-contant">
+                    <div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
+                    <div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
+                    <div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal de Login -->
         <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
             <div class="modal-content">
@@ -111,17 +123,7 @@ require_once 'includes/config.php'; // Configuração do banco de dados
             </div>
         </section>
 
-        <!-- Latest News Section -->
-        <div class="latest-news-section">
-            <div class="ln-title">Atualizações</div>
-            <div class="news-ticker">
-                <div class="news-ticker-contant">
-                    <div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
-                    <div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
-                    <div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
-                </div>
-            </div>
-        </div>
+
 
     </main>
 
