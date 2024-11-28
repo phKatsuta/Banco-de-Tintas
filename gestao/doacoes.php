@@ -37,60 +37,66 @@ $doacoesConfirmadas = $stmtConfirmadas->fetchAll(PDO::FETCH_GROUP);
 <h2>Doações Realizadas</h2>
 
 <!-- Doações a Confirmar -->
-<h3>Doações a Confirmar</h3>
-<?php if (!empty($doacoesAConfirmar)): ?>
-    <?php foreach ($doacoesAConfirmar as $idDoacao => $tintas): ?>
-        <details>
-            <summary>
-                Doação ID: <?= $idDoacao ?> | Data: <?= date('d/m/Y', strtotime($tintas[0]['data_doacao'])) ?> | Local: <?= htmlspecialchars($tintas[0]['local_doado']) ?>
-            </summary>
-            <ul>
-                <?php foreach ($tintas as $tinta): ?>
-                    <li>
-                        <strong>Tinta:</strong> <?= htmlspecialchars($tinta['nome_tintas']) ?><br>
-                        <strong>Marca:</strong> <?= htmlspecialchars($tinta['marca']) ?><br>
-                        <strong>Linha:</strong> <?= htmlspecialchars($tinta['linha']) ?><br>
-                        <strong>Acabamento:</strong> <?= htmlspecialchars($tinta['acabamento']) ?><br>
-                        <strong>Quantidade:</strong> <?= $tinta['quantidade_tintas_doada'] ?> L<br>
-                        <strong>Validade:</strong> <?= date('d/m/Y', strtotime($tinta['data_validade_tintas'])) ?>
-                    </li>
-                    <hr>
-                <?php endforeach; ?>
-            </ul>
-        </details>
-    <?php endforeach; ?>
-<?php else: ?>
-    <p>Não há doações a confirmar.</p>
-<?php endif; ?>
-
+<details>
+    <Summary>A CONFIRMAR</Summary>
+    <?php if (!empty($doacoesAConfirmar)): ?>
+        <?php foreach ($doacoesAConfirmar as $idDoacao => $tintas): ?>
+            <details>
+                <summary>
+                    Doação ID: <?= $idDoacao ?> | Data: <?= date('d/m/Y', strtotime($tintas[0]['data_doacao'])) ?> | Local:
+                    <?= htmlspecialchars($tintas[0]['local_doado']) ?>
+                </summary>
+                <ul>
+                    <?php foreach ($tintas as $tinta): ?>
+                        <li>
+                            <strong>Tinta:</strong> <?= htmlspecialchars($tinta['nome_tintas']) ?><br>
+                            <strong>Marca:</strong> <?= htmlspecialchars($tinta['marca']) ?><br>
+                            <strong>Linha:</strong> <?= htmlspecialchars($tinta['linha']) ?><br>
+                            <strong>Acabamento:</strong> <?= htmlspecialchars($tinta['acabamento']) ?><br>
+                            <strong>Quantidade:</strong> <?= $tinta['quantidade_tintas_doada'] ?> L<br>
+                            <strong>Validade:</strong> <?= date('d/m/Y', strtotime($tinta['data_validade_tintas'])) ?>
+                        </li>
+                        <hr>
+                    <?php endforeach; ?>
+                </ul>
+            </details>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Não há doações a confirmar.</p>
+    <?php endif; ?>
+</details>
 <!-- Doações Confirmadas -->
-<h3>Doações Confirmadas</h3>
-<?php if (!empty($doacoesConfirmadas)): ?>
-    <?php foreach ($doacoesConfirmadas as $idDoacao => $tintas): ?>
-        <details>
-            <summary>
-                Doação ID: <?= $idDoacao ?> | Data: <?= date('d/m/Y', strtotime($tintas[0]['data_doacao'])) ?> | Local: <?= htmlspecialchars($tintas[0]['local_doado']) ?>
-            </summary>
-            <ul>
-                <?php foreach ($tintas as $tinta): ?>
-                    <li>
-                        <strong>Tinta:</strong> <?= htmlspecialchars($tinta['nome_tintas']) ?><br>
-                        <strong>Marca:</strong> <?= htmlspecialchars($tinta['marca']) ?><br>
-                        <strong>Linha:</strong> <?= htmlspecialchars($tinta['linha']) ?><br>
-                        <strong>Acabamento:</strong> <?= htmlspecialchars($tinta['acabamento']) ?><br>
-                        <strong>Quantidade:</strong> <?= $tinta['quantidade_tintas_doada'] ?> L<br>
-                        <strong>Validade:</strong> <?= date('d/m/Y', strtotime($tinta['data_validade_tintas'])) ?><br>
-                        <strong>Cor:</strong>
-                        <canvas width="20" height="20" style="border: 1px solid #000; background-color: <?= htmlspecialchars($tinta['codigo_RGB']) ?>;"></canvas>
-                    </li>
-                    <hr>
-                <?php endforeach; ?>
-            </ul>
-        </details>
-    <?php endforeach; ?>
-<?php else: ?>
-    <p>Não há doações confirmadas.</p>
-<?php endif; ?>
-
+<details>
+    <summary>CONFIRMADAS</summary>
+    <h3>Doações Confirmadas</h3>
+    <?php if (!empty($doacoesConfirmadas)): ?>
+        <?php foreach ($doacoesConfirmadas as $idDoacao => $tintas): ?>
+            <details>
+                <summary>
+                    Doação ID: <?= $idDoacao ?> | Data: <?= date('d/m/Y', strtotime($tintas[0]['data_doacao'])) ?> | Local:
+                    <?= htmlspecialchars($tintas[0]['local_doado']) ?>
+                </summary>
+                <ul>
+                    <?php foreach ($tintas as $tinta): ?>
+                        <li>
+                            <strong>Tinta:</strong> <?= htmlspecialchars($tinta['nome_tintas']) ?><br>
+                            <strong>Marca:</strong> <?= htmlspecialchars($tinta['marca']) ?><br>
+                            <strong>Linha:</strong> <?= htmlspecialchars($tinta['linha']) ?><br>
+                            <strong>Acabamento:</strong> <?= htmlspecialchars($tinta['acabamento']) ?><br>
+                            <strong>Quantidade:</strong> <?= $tinta['quantidade_tintas_doada'] ?> L<br>
+                            <strong>Validade:</strong> <?= date('d/m/Y', strtotime($tinta['data_validade_tintas'])) ?><br>
+                            <strong>Cor:</strong>
+                            <canvas width="20" height="20"
+                                style="border: 1px solid #000; background-color: <?= htmlspecialchars($tinta['codigo_RGB']) ?>;"></canvas>
+                        </li>
+                        <hr>
+                    <?php endforeach; ?>
+                </ul>
+            </details>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Não há doações confirmadas.</p>
+    <?php endif; ?>
+</details>
 <script src="../SCRIPT/script.js"></script>
 <?php include '../templates/footer.php'; ?>
