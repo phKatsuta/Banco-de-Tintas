@@ -2,6 +2,8 @@
 session_start();
 require 'includes/config.php'; // Inclua o arquivo de configuração do banco de dados
 
+$error = ''; // Variável de erro, caso o login falhe
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -37,19 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Se preferir, adicione seus arquivos de CSS aqui -->
 </head>
 <body>
     <h1>Login</h1>
-    <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
     <form method="POST" action="login.php">
         <label>Email:</label>
-        <input type="email" name="email" required>
-        <br>
+        <input type="email" name="email" required placeholder="Digite seu email">
+        
         <label>Senha:</label>
-        <input type="password" name="password" required>
-        <br>
+        <input type="password" name="password" required placeholder="Digite sua senha">
+        
         <button type="submit">Entrar</button>
     </form>
+    <?php if ($error): ?>
+        <p><?php echo $error; ?></p>
+    <?php endif; ?>
 </body>
 </html>

@@ -1,9 +1,22 @@
 <?php
-// Incluir arquivos de configuração e sessões
-if (isset($_SESSION['success_message'])) {
-    echo '<p class="success-message">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
-    unset($_SESSION['success_message']);
+session_start(); // Inicia a sessão
+
+// Verifica se o usuário está logado, se não, redireciona para a página de login
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.php");
+    exit;
 }
+
+// Verifica se há uma mensagem de sucesso na sessão e a exibe
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+} else {
+    $success_message = '';
+}
+
+require_once 'includes/config.php'; // Configuração do banco de dados
+
 ?>
 
 <!DOCTYPE html>
@@ -43,9 +56,9 @@ if (isset($_SESSION['success_message'])) {
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Exibe mensagem de erro no login -->
-        <?php if (!empty($error)): ?>
-            <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
+        <!-- Exibe mensagem de sucesso (se houver) -->
+        <?php if ($success_message): ?>
+            <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
         <?php endif; ?>
 
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->
