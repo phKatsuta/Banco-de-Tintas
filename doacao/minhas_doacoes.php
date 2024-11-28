@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/gera_menu.php';
+require_once '../includes/verifica_doador.php';
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     header("Location:" . BASE_URL . "login.php");
