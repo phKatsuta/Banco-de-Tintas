@@ -1,80 +1,97 @@
 <?php
 require_once '../includes/verifica_gestor.php';
-require_once __DIR__ . '/config.php';
-// Verifica se o usuário está logado
+
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../login.php');
     exit;
 }
+
 include '../templates/header.php';
 
-$tabela = mysql_query($pdo, "SELECT
-	*
-FROM
-	usuarios u 
-INNER JOIN
-	usuario_tipos t 
-ON
-	u.id = t.usuario_id
-WHERE
-
-	t.tipo = 'Monitor';")
+try {
+    // Consulta segura com PDO
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.id, u.usuario_nome, u.usuario_cep, u.usuario_endereco, u.usuario_endereco_num, 
+            u.usuario_endereco_complemento, u.usuario_bairro, u.usuario_cidade, u.usuario_estado,
+            u.usuario_email, u.eh_empresa, u.usuario_documento, u.telefone
+        FROM 
+            usuarios u
+        INNER JOIN 
+            usuario_tipos t 
+        ON 
+            u.id = t.usuario_id
+        WHERE 
+            t.tipo = 'Monitor'
+    ");
+    $stmt->execute();
+    $monitores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    die("Erro ao buscar os monitores: " . $e->getMessage());
+}
 ?>
-<html>
+
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitores</title>
+    <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body>
 <div align="center">
-        <h1>MONITORES</h1>
-        <table border="1">
-            <tr>
-            <th>ID</th>
-                <th>Nome</th>
-                <th>CEP</th>
-                <th>ENDEREÇO</th>
-                <th>NÚMERO</th>
-                <th>COMPLEMENTO</th>
-                <th>BAIRRO</th>
-                <th>CIDADE</th>
-                <th>ESTADO</th>
-                <th>EMAIL</th>
-                <th>É EMPRESA?</th>
-                <th>DOCUMENTO</th>
-                <th>TELEFONE</th>
-            </tr>
-            <?php
-                while($linha = mysqli_fetch_array($tabela))
-                {
-
-            ?>
+    <h1>Monitores</h1>
+    <?php if (count($monitores) > 0): ?>
+        <table class="tabela-monitores">
+            <thead>
                 <tr>
-                    <td><?php echo $linha["id"]?></td>
-                    <td><?php echo $linha["usuario_nome"]?></td>
-                    <td><?php echo $linha["usuario_cep"]?></td>
-                    <td><?php echo $linha["usuario_endereco"]?></td>
-                    <td><?php echo $linha["usuario_endereco_num"]?></td>
-                    <td><?php echo $linha["usuario_endereco_complemento"]?></td>
-                    <td><?php echo $linha["usuario_bairro"]?></td>
-                    <td><?php echo $linha["usuario_cidade"]?></td>
-                    <td><?php echo $linha["usuario_estado"]?></td>
-                    <td><?php echo $linha["eh_empresa"]?></td>
-                    <td><?php echo $linha["usuario_documento"]?></td>
-                    <td><?php echo $linha["telefone"]?></td>
-
-                    <td align="center">
-                        <a href="">
-                            <img src="imagens/excluir.png" alt="Excluir">
-                        </a>
-                    </td>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CEP</th>
+                    <th>Endereço</th>
+                    <th>Número</th>
+                    <th>Complemento</th>
+                    <th>Bairro</th>
+                    <th>Cidade</th>
+                    <th>Estado</th>
+                    <th>Email</th>
+                    <th>É Empresa?</th>
+                    <th>Documento</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
                 </tr>
-            <?php 
-                }
-            ?>
+            </thead>
+            <tbody>
+                <?php foreach ($monitores as $monitor): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($monitor["id"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_nome"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_cep"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_endereco"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_endereco_num"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_endereco_complemento"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_bairro"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_cidade"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_estado"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_email"]) ?></td>
+                        <td><?= $monitor["eh_empresa"] ? 'Sim' : 'Não' ?></td>
+                        <td><?= htmlspecialchars($monitor["usuario_documento"]) ?></td>
+                        <td><?= htmlspecialchars($monitor["telefone"]) ?></td>
+                        <td>
+                            <a href="excluir_monitor.php?id=<?= $monitor['id'] ?>" onclick="return confirm('Deseja realmente excluir este monitor?')">
+                                <img src="../imagens/excluir.png" alt="Excluir" title="Excluir">
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
         </table>
-    </div>
+    <?php else: ?>
+        <p>Não há monitores cadastrados no sistema.</p>
+    <?php endif; ?>
+</div>
+<script src="../SCRIPT/script.js"></script>
+<?php include '../templates/footer.php'; ?>
 </body>
 </html>
