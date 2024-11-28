@@ -1,3 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Banco de Tintas Orgânicas">
+    <meta name="keywords" content="banco de tintas, sustentabilidade, FATEC Jundiaí">
+    <title>Banco de Tintas</title>
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="shortcut icon"/>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/owl.carousel.css"/>
+    <link rel="stylesheet" href="css/animate.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
+
+</head>
+
+<body>
 <?php
 require_once '../includes/gera_menu.php';
 include '../includes/via_cep.php';
@@ -88,11 +115,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <?php include '../templates/header.php'; ?>
-
-<link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="css/owl.carousel.css"/>
-    <link rel="stylesheet" href="css/animate.css"/>
 
 <style>
     body {
@@ -309,3 +331,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script type="text/javascript" src="../SCRIPT/script.js"></script>
 
 <?php include '../templates/footer.php'; ?>
+
+</body>
+<html>
