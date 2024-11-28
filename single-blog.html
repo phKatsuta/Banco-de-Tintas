@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start();  // Deve ser a primeira coisa no arquivo, antes de qualquer HTML
 require 'includes/config.php';
 
 $error = ''; // Inicialize a variável de erro
@@ -163,10 +163,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <form method="POST" action="login.php">
                                 <label>Email:</label>
                                 <input type="email" name="email" required placeholder="Digite seu email">
-                                
+                                 
                                 <label>Senha:</label>
                                 <input type="password" name="password" required placeholder="Digite sua senha">
-                                
+                                 
                                 <button type="submit">Entrar</button>
                             </form>
 
