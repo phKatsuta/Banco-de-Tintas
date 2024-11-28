@@ -3,7 +3,6 @@ require_once '../includes/gera_menu.php';
 include '../includes/via_cep.php';
 include '../includes/busca_cep.php';
 include '../includes/function_buscarEnderecoViaCep.php';
-// include '../includes/teste_via_cep.php'; // Teste de funcionalidade da API
 
 // Variáveis para armazenar mensagens de erro/sucesso
 $errors = [];
@@ -14,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recebe e valida os dados do formulário
     $nome = trim($_POST["usuario_nome"]);
     $cep = trim($_POST["usuario_cep"]);
-    // Campos marcados como readonly precisam ter valores definidos antes de serem enviados. Para garantir que sejam enviados mesmo quando o preenchimento automático falhar:
     $endereco = trim($_POST["usuario_endereco"] ?? ""); // readonly
     $endereco_num = trim($_POST["usuario_endereco_num"]);
     $endereco_complemento = trim($_POST["usuario_endereco_complemento"]);
@@ -101,14 +99,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php if ($success): ?>
     <p><?php echo htmlspecialchars($success); ?></p>
     <script>
-        // Redireciona para index.php após 3 segundos
         setTimeout(function () {
             window.location.href = '../index.php';
-        }, 3000); // 3000 milissegundos = 3 segundos
+        }, 3000); // 3 segundos
     </script>
 <?php endif; ?>
 
 <!-- Página de cadastro com estilo do formulário -->
+<head>
+    <!-- Adicionando CSS -->
+    <link rel="stylesheet" type="text/css" href="/cadastro/usuario.css"> 
+</head>
+
 <section class="registration-form">
     <div class="container">
         <h2>Cadastro de Usuário</h2>
@@ -130,6 +132,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="password" id="confirma_senha" name="confirma_senha" class="form-control" required>
             </div>
             <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" class="form-control" required>
+            </div>
+            <div class="form-group">
                 <label for="usuario_cep">CEP:</label>
                 <input type="text" id="usuario_cep" name="usuario_cep" class="form-control">
             </div>
@@ -139,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="form-group">
                 <label for="usuario_endereco_num">Número:</label>
-                <input type="text" id="usuario_endereco_num" name="usuario_endereco_num" class="form-control">
+                <input type="text" id="usuario_endereco_num" name="usuario_endereco_num" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="usuario_endereco_complemento">Complemento:</label>
@@ -154,29 +160,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" id="usuario_cidade" name="usuario_cidade" class="form-control" readonly>
             </div>
             <div class="form-group">
-                <label for="usuario_estado">Estado (UF):</label>
-                <input type="text" id="usuario_estado" name="usuario_estado" class="form-control" maxlength="2" readonly>
+                <label for="usuario_estado">Estado:</label>
+                <input type="text" id="usuario_estado" name="usuario_estado" class="form-control" readonly>
             </div>
             <div class="form-group">
-                <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
-                <input type="text" id="usuario_documento" name="usuario_documento" class="form-control" maxlength="18">
+                <input type="checkbox" id="eh_empresa" name="eh_empresa">
+                <label for="eh_empresa">Empresa</label>
             </div>
-            <div class="form-group">
-                <label for="telefone">Telefone:</label>
-                <input type="text" id="telefone" name="telefone" class="form-control" maxlength="15">
-            </div>
-            <div class="form-group">
-                <label for="eh_empresa">É uma organização?</label>
-                <select id="eh_empresa" name="eh_empresa" class="form-control">
-                    <option value="0">Não</option>
-                    <option value="1">Sim</option>
-                </select>
-            </div>
-            <div class="form-group" id="organizacao_fields" style="display: none;">
-                <label for="tipo_organizacao">Tipo de Organização:</label>
-                <input type="text" id="tipo_organizacao" name="tipo_organizacao" class="form-control">
-                <label for="area_atuacao">Área de Atuação:</label>
-                <input type="text" id="area_atuacao" name="area_atuacao" class="form-control">
+            <div id="organizacao_fields" style="display: none;">
+                <div class="form-group">
+                    <label for="tipo_organizacao">Tipo de Organização:</label>
+                    <input type="text" id="tipo_organizacao" name="tipo_organizacao" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="area_atuacao">Área de Atuação:</label>
+                    <input type="text" id="area_atuacao" name="area_atuacao" class="form-control">
+                </div>
             </div>
             <div class="form-group">
                 <label for="tipos">O que deseja?</label>
@@ -185,7 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="receber">Receber</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
+            <button type="submit" class="btn-primary">Cadastrar</button>
         </form>
     </div>
 </section>
@@ -193,11 +192,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script>
     document.getElementById("eh_empresa").addEventListener("change", function() {
         const organizacaoFields = document.getElementById("organizacao_fields");
-        if (this.value == "1") {
+        if (this.checked) {
             organizacaoFields.style.display = "block";
         } else {
             organizacaoFields.style.display = "none";
         }
     });
 </script>
-
