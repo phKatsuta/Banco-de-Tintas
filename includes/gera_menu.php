@@ -68,13 +68,15 @@ if (!function_exists('gerarMenuPrincipal')) {
             echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/analisar_solicitacao.php">Analisar Solicitações</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/mistura_tintas.php">Misturar Tintas</a></li>';
+            echo '<li><a href="' . BASE_URL . 'gestao/monitores.php">Listar Monitores</a></li>';
+            echo '<li><a href="' . BASE_URL . 'gestao/doacoes.php">Listar Doações Realizadas</a></li>';
         }
 
         // Menu para Monitor
         if (in_array('Monitor', $tipos_usuario)) {
             echo '<p>Monitor</p>';
-            echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Analisar Doações</a></li>';
-            echo '<li><a href="' . BASE_URL . 'gestao/monitores.php">Monitoramento</a></li>';
+            echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
+            echo '<li><a href="' . BASE_URL . 'gestao/entrega.php">Entrega de solicitações</a></li>';
         }
 
         echo '</ul>';
