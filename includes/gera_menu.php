@@ -44,46 +44,46 @@ if (!function_exists('gerarMenuPrincipal')) {
     {
         echo '<nav class="user-menu">';
         echo '<h2>Bem vindo, ' . htmlspecialchars($usuario_nome) . '!</h2>';
-        echo '<ul>';
+        echo '<details><summary>Menus</summary><ul>';
         echo '<li><a href="' . BASE_URL . 'index.php">Início</a></li>';
 
         // Menu para Doador
         if (in_array('Doador', $tipos_usuario)) {
-            echo '<p>Doador</p>';
+            echo '<details><summary>Doador</summary>';
             echo '<li><a href="' . BASE_URL . 'doacao/minhas_doacoes.php">Minhas Doações</a></li>';
             echo '<li><a href="' . BASE_URL . 'doacao/doacao.php">Cadastrar Doações</a></li>';
+            echo '</details>';
         }
 
         // Menu para Beneficiário
         if (in_array('Beneficiario', $tipos_usuario)) {
-            echo '<p>Beneficiário</p>';
+            echo '<details><summary>Beneficiário</summary>';
             echo '<li><a href="' . BASE_URL . 'solicitacao/minhas_solicitacoes.php">Minhas Solicitações</a></li>';
             echo '<li><a href="' . BASE_URL . 'solicitacao/solicitacao.php">Solicitar Tintas</a></li>';
+            echo '</details>';
         }
 
         // Menu para Gestor
         if (in_array('Gestor', $tipos_usuario)) {
-            echo '<p>Gestor</p>';
+            echo '<details><summary>Gestor</summary>';
             echo '<li><a href="' . BASE_URL . 'gestao/cadastrar_monitor.php">Cadastrar Monitor</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/analisar_solicitacao.php">Analisar Solicitações</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/mistura_tintas.php">Misturar Tintas</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/monitores.php">Listar Monitores</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/doacoes.php">Listar Doações Realizadas</a></li>';
+            echo '</details>';
         }
 
         // Menu para Monitor
         if (in_array('Monitor', $tipos_usuario)) {
-            echo '<p>Monitor</p>';
+            echo '<details><summary>Monitor</summary>';
             echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
             echo '<li><a href="' . BASE_URL . 'gestao/entrega.php">Entrega de solicitações</a></li>';
+            echo '</details>';
         }
 
-        echo '</ul>';
-        echo '<form method="POST" action="' . BASE_URL . 'logout.php">';
-        echo '<button type="submit" class="btn">Sair</button>';
-        echo '</form>';
-        echo '</nav>';
+        echo '</details></ul>';
     }
 }
 
@@ -92,12 +92,17 @@ if (!function_exists('gerarMenuPerfil')) {
     function gerarMenuPerfil()
     {
         echo '<nav class="perfil-menu">';
-        echo '<h3>Menu de Perfil</h3>';
+        echo '<details><summary>Meu Perfil</summary>';
         echo '<ul>';
         echo '<li><a href="' . BASE_URL . 'perfil/editar_perfil.php">Editar Perfil</a></li>';
         echo '<li><a href="' . BASE_URL . 'perfil/alterar_senha.php">Alterar senha</a></li>';
         echo '<li><a href="' . BASE_URL . 'perfil/excluir_conta.php">Excluir Conta</a></li>';
         echo '</ul>';
+        echo '</details></nav>';
+
+        echo '<form method="POST" action="' . BASE_URL . 'logout.php">';
+        echo '<button type="submit" class="btn">Sair</button>';
+        echo '</form>';
         echo '</nav>';
     }
 }
