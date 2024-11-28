@@ -165,3 +165,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script src="../SCRIPT/script_cadastro.js"></script>
 <script src="../SCRIPT/script.js"></script>
 <?php include '../templates/footer.php'; ?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Banco de Tintas</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h1 style="text-align: center; color: #333;">Cadastro - Banco de Tintas</h1>
+
+        <?php if (!empty($errors)): ?>
+            <div style="background-color: #ffdddd; padding: 10px; border-left: 6px solid #f44336; margin-bottom: 20px;">
+                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <div style="background-color: #ddffdd; padding: 10px; border-left: 6px solid #4CAF50; margin-bottom: 20px;">
+                <?= htmlspecialchars($success) ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="" style="margin-top: 20px;">
+            <label for="usuario_nome" style="font-weight: bold; display: block; margin-bottom: 5px;">Nome:</label>
+            <input type="text" name="usuario_nome" id="usuario_nome" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <label for="usuario_cep" style="font-weight: bold; display: block; margin-bottom: 5px;">CEP:</label>
+            <input type="text" name="usuario_cep" id="usuario_cep" oninput="aplicarMascaraCEP(this)" placeholder="Digite o CEP" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <button type="button" id="buscarCep" style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">Buscar CEP</button>
+            <div id="loading-indicator" style="display: none;">Carregando...</div>
+
+            <label for="usuario_email" style="font-weight: bold; display: block; margin-bottom: 5px;">E-mail:</label>
+            <input type="email" name="usuario_email" id="usuario_email" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <label for="senha" style="font-weight: bold; display: block; margin-bottom: 5px;">Senha:</label>
+            <input type="password" name="senha" id="senha" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <label for="confirma_senha" style="font-weight: bold; display: block; margin-bottom: 5px;">Confirme a Senha:</label>
+            <input type="password" name="confirma_senha" id="confirma_senha" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <label for="telefone" style="font-weight: bold; display: block; margin-bottom: 5px;">Telefone:</label>
+            <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <fieldset style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+                <legend style="font-weight: bold;">Você deseja:</legend>
+                <label><input type="checkbox" name="tipos[]" value="Doador" style="margin-right: 5px;"> Doar tintas</label><br>
+                <label><input type="checkbox" name="tipos[]" value="Beneficiario" style="margin-right: 5px;"> Receber tintas</label>
+            </fieldset>
+
+            <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 15px; display: block; width: 100%;">Cadastrar</button>
+        </form>
+    </div>
+
+    <script src="../SCRIPT/script_cadastro.js"></script>
+    <script src="../SCRIPT/script.js"></script>
+</body>
+</html>
