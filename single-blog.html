@@ -1,5 +1,5 @@
 <?php
-session_start();  // Deve ser a primeira coisa no arquivo, antes de qualquer HTML
+session_start();  // Iniciar a sessão antes de qualquer saída HTML
 require 'includes/config.php';
 
 $error = ''; // Inicialize a variável de erro
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $_SESSION['user_types'] = $user_types;
 
-        // Redireciona para a página home.html após sucesso no login
+        // Redireciona para a página home.php após sucesso no login
         header("Location: index.php");
         exit;
     } else {
