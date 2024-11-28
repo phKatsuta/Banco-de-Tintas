@@ -123,7 +123,7 @@ if (isset($_SESSION['usuario_id'])) {
     echo '<section class="hero">';
     echo '<h1>Bem-vindo ao Banco de Tintas</h1>';
     echo '<p>Transforme vidas com cores! Doe tintas que você não usa mais ou solicite tintas para suas necessidades.</p>';
-    echo '<a href="' . BASE_URL . 'cadastro/usuario.php" class="btn">Cadastrar</a>';
+    echo '<a href="' . BASE_URL . 'cadastro/usuario.php"><button class="btn">Cadastrar</button></a>';
     echo '<button class="btn" onclick="openModal()">Acessar</button>';
     echo '</section>';
 }
