@@ -89,6 +89,132 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php include '../templates/header.php'; ?>
 
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Header */
+    .header-section {
+        background-color: #222;
+        padding: 20px 0;
+    }
+
+    .site-logo img {
+        width: 150px;
+    }
+
+    .main-menu {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+    }
+
+    .main-menu li {
+        display: inline;
+        margin: 0 15px;
+    }
+
+    .main-menu li a {
+        color: #fff;
+        font-size: 16px;
+        text-decoration: none;
+    }
+
+    /* Form Section */
+    .registration-form {
+        background-color: #fff;
+        padding: 30px;
+        max-width: 600px;
+        margin: 50px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .registration-form h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #222;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #222;
+        background-color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #222;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #333;
+    }
+
+    /* Footer */
+    .footer-section {
+        background-color: #222;
+        color: #fff;
+        padding: 30px 0;
+        text-align: center;
+    }
+
+    .footer-menu {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .footer-menu li {
+        display: inline;
+        margin: 0 15px;
+    }
+
+    .footer-menu li a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .copyright {
+        font-size: 14px;
+        color: #fff;
+        margin-top: 20px;
+    }
+</style>
+
 <h1>Cadastro - Banco de Tintas</h1>
 
 <?php if (!empty($errors)): ?>
