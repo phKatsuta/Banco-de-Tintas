@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/config.php';
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 // Função para obter os tipos de usuário diretamente do banco
 if (!function_exists('getUserTypes')) {
