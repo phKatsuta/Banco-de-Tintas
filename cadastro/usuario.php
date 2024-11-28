@@ -1,4 +1,6 @@
 <?php
+require_once '../includes/gera_menu.php';
+
 include '../includes/via_cep.php';
 include '../includes/busca_cep.php';
 include '../includes/function_buscarEnderecoViaCep.php';
@@ -91,6 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -99,8 +102,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="./CSS/styles_menu.css">
     <title>Banco de Tintas</title>
 </head>
+
 <body>
-    <main class= "container">
+    <main class="container">
         <!-- Exibe erros ou sucesso -->
         <?php if (!empty($errors)): ?>
             <ul>
@@ -119,7 +123,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }, 3000); // 3000 milissegundos = 3 segundos
             </script>
         <?php endif; ?>
-        <?php require_once '../includes/gera_menu.php'; ?>
 
         <h1>Cadastro - Banco de Tintas</h1>
         <?php if (!empty($errors)): ?>
@@ -176,10 +179,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="password" name="confirma_senha" id="confirma_senha" required><br>
 
             <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
-            <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)" maxlength="18"
-                placeholder="Digite CPF ou CNPJ">
+            <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)"
+                maxlength="18" placeholder="Digite CPF ou CNPJ">
             <span id=" usuario_documento_Error" style="color: red; display: none;">CPF ou CNPJ é obrigatório para
-            organizações.</span><br>
+                organizações.</span><br>
 
             <label for="telefone">Telefone:</label>
             <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX"><br>
@@ -205,7 +208,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <button type="submit">Cadastrar</button>
         </form>
-    </main>    
+    </main>
     <script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
     <script type="text/javascript" src="../SCRIPT/script.js"></script>
     <?php include '../templates/footer.php'; ?>
