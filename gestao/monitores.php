@@ -56,7 +56,6 @@ try {
                     <th>Cidade</th>
                     <th>Estado</th>
                     <th>Email</th>
-                    <th>É Empresa?</th>
                     <th>Documento</th>
                     <th>Telefone</th>
                     <th>Ações</th>
@@ -75,7 +74,6 @@ try {
                         <td><?= htmlspecialchars($monitor["usuario_cidade"]) ?></td>
                         <td><?= htmlspecialchars($monitor["usuario_estado"]) ?></td>
                         <td><?= htmlspecialchars($monitor["usuario_email"]) ?></td>
-                        <td><?= $monitor["eh_empresa"] ? 'Sim' : 'Não' ?></td>
                         <td><?= htmlspecialchars($monitor["usuario_documento"]) ?></td>
                         <td><?= htmlspecialchars($monitor["telefone"]) ?></td>
                         <td>
