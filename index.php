@@ -1,24 +1,3 @@
-<?php
-session_start(); // Inicia a sessão
-
-// Verifica se o usuário está logado, se não, redireciona para a página de login
-if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Verifica se há uma mensagem de sucesso na sessão e a exibe
-if (isset($_SESSION['success_message'])) {
-    $success_message = $_SESSION['success_message'];
-    unset($_SESSION['success_message']);
-} else {
-    $success_message = '';
-}
-
-require_once 'includes/config.php'; // Configuração do banco de dados
-
-?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -56,13 +35,21 @@ require_once 'includes/config.php'; // Configuração do banco de dados
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Exibe mensagem de sucesso (se houver) -->
-        <?php if ($success_message): ?>
-            <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
-        <?php endif; ?>
 
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->
         <?php require_once 'includes/gera_menu.php'; ?>
+
+        <!-- Latest News Section -->
+        <div class="latest-news-section">
+            <div class="ln-title">Atualizações</div>
+            <div class="news-ticker">
+                <div class="news-ticker-contant">
+                    <div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
+                    <div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
+                    <div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Modal de Login -->
         <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
@@ -111,17 +98,7 @@ require_once 'includes/config.php'; // Configuração do banco de dados
             </div>
         </section>
 
-        <!-- Latest News Section -->
-        <div class="latest-news-section">
-            <div class="ln-title">Atualizações</div>
-            <div class="news-ticker">
-                <div class="news-ticker-contant">
-                    <div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
-                    <div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
-                    <div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
-                </div>
-            </div>
-        </div>
+
 
     </main>
 
@@ -145,7 +122,7 @@ require_once 'includes/config.php'; // Configuração do banco de dados
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/jquery.marquee.min.js"></script>
     <script src="js/main.js"></script>
-
+    <script src="SCRIPT/script.js"></script>
     <?php include './templates/footer.php'; ?>  <!-- Incluindo o rodapé -->
 </body>
 

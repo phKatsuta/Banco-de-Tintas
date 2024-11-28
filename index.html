@@ -1,334 +1,153 @@
+<?php
+session_start(); // Inicia a sessão
+
+// Verifica se o usuário está logado, se não, redireciona para a página de login
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Verifica se há uma mensagem de sucesso na sessão e a exibe
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+} else {
+    $success_message = '';
+}
+
+require_once 'includes/config.php'; // Configuração do banco de dados
+
+?>
+
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="pt-BR">
+
 <head>
-	<title>Banco de Tintas</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="Game Warrior Template">
-	<meta name="keywords" content="warrior, game, creative, html">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- Favicon -->   
-	<link href="img/favicon.ico" rel="shortcut icon"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Banco de Tintas Orgânicas">
+    <meta name="keywords" content="banco de tintas, sustentabilidade, FATEC Jundiaí">
+    <title>Banco de Tintas</title>
 
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="shortcut icon"/>
 
-	<!-- Stylesheets -->
-	<link rel="stylesheet" href="css/bootstrap.min.css"/>
-	<link rel="stylesheet" href="css/font-awesome.min.css"/>
-	<link rel="stylesheet" href="css/owl.carousel.css"/>
-	<link rel="stylesheet" href="css/style.css"/>
-	<link rel="stylesheet" href="css/animate.css"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
 
-
-	<!--[if lt IE 9]>
-	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/owl.carousel.css"/>
+    <link rel="stylesheet" href="css/animate.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
 
 </head>
+
 <body>
-	<!-- Page Preloder -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
 
-	<!-- Header section -->
-	<header class="header-section">
-		<div class="container">
-			<!-- logo -->
-			<a class="site-logo" href="index.html">
-				<img src="img/logo.png" alt="">
-			</a>
-			<div class="user-panel">
-				<a href="single-blog.html">Login</a>
-				<br>
-			</div>
-			<div class="user-panel">
-				<a href="categories.html">Cadastro</a>
-			</div>
-			<!-- responsive -->
-			<div class="nav-switch">
-				<i class="fa fa-bars"></i>
-			</div>
-			<!-- site menu -->
-			<nav class="main-menu">
-				<ul>
-					<li><a href="index.html">Home</a></li>
-					<li><a href="review.html">Banco de Tintas</a></li>					
-					<li><a href="contact.html">Contato</a></li>
-					<li><a href="community.html">Sobre o Projeto</a></li>		
-				</ul>
-			</nav>
-		</div>
-	</header>
-	<!-- Header section end -->
+    <?php include './templates/header.php'; ?>  <!-- Incluindo o cabeçalho -->
 
+    <!-- Page Preloader -->
+    <div id="preloder" class="preloader">
+        <div class="loader"></div>
+    </div>
 
-	<!-- Hero section -->
-	<section class="hero-section">
-		<div class="hero-slider owl-carousel">
-			<div class="hs-item set-bg" data-setbg="img/slider-1.jpg">
-				<div class="hs-text">
-					<div class="container">
-						<h2>Banco de <span>Tintas </span>Orgânicas</h2>
-						<p>O banco de tintas orgânicas desenvolvido pelo curso de GAM da FATEC Jundiaí visa promover soluções sustentáveis para a indústria de tintas, utilizando matérias-primas naturais e eco-friendly. Este projeto inovador não apenas contribui para a preservação ambiental, mas também busca aprimorar a qualidade estética das tintas, mantendo a segurança e a eficiência dos processos de aplicação.</p>
-						<a href="community.html" class="site-btn">Leia Mais</a>
-					</div>
-				</div>
-			</div>
-			<div class="hs-item set-bg" data-setbg="img/slider-2.jpg">
-				<div class="hs-text">
-					<div class="container">
-						<h2>Um Projeto <span>FATEC </span>feito por alunos; para a comunidade</h2>
-						<p>O projeto do banco de tintas orgânicas foi desenvolvido pelos alunos do curso de ADS da FATEC Jundiaí, que criaram toda a estrutura do sistema. Desde o banco de dados, passando pelo desenvolvimento do front-end até a elaboração dos scripts, os alunos foram responsáveis por todas as etapas, garantindo uma solução completa e funcional para o gerenciamento e catalogação das tintas orgânicas.</p>
-						<a href="community.html" class="site-btn">Leia Mais</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Hero section end -->
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Exibe mensagem de sucesso (se houver) -->
+        <?php if ($success_message): ?>
+            <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
+        <?php endif; ?>
 
+        <!-- Exibe o menu dinâmico se o usuário estiver logado -->
+        <?php require_once 'includes/gera_menu.php'; ?>
 
-	<!-- Latest news section -->
-	<div class="latest-news-section">
-		<div class="ln-title">Atualizações</div>
-		<div class="news-ticker">
-			<div class="news-ticker-contant">
-				<div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
-				<div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
-				<div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
-			</div>
-		</div>
-	</div>
-	<!-- Latest news section end -->
+        <!-- Latest News Section -->
+        <div class="latest-news-section">
+            <div class="ln-title">Atualizações</div>
+            <div class="news-ticker">
+                <div class="news-ticker-contant">
+                    <div class="nt-item"><span class="new">Novo</span>Alunos de ADS da FATEC Jundiaí concluem projeto de banco de tintas orgânicas com sistema completo e sustentável.</div>
+                    <div class="nt-item"><span class="strategy">Estratégia</span>FATEC aplica estratégia inovadora para criar um banco de tintas orgânicas sustentável e funcional.</div>
+                    <div class="nt-item"><span class="racing">Projeto</span>Scripts e automação de processos garantem a funcionalidade do banco de tintas orgânicas desenvolvido por alunos de ADS </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Modal de Login -->
+        <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+                <div class="modal-header">
+                    <h2>Acessar o Sistema</h2>
+                </div>
+                <form method="POST" action="login.php" class="modal-form">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" placeholder="Digite seu email" required>
+                    <label for="password">Senha:</label>
+                    <input type="password" name="password" id="password" placeholder="Digite sua senha" required>
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="remember" id="remember">
+                        <label for="remember">Lembrar-me</label>
+                    </div>
+                    <button type="submit" class="btn">Entrar</button>
+                </form>
+            </div>
+        </div>
 
-	<!-- Feature section -->
-	<section class="feature-section spad">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-3 col-md-6 p-0">
-					<div class="feature-item set-bg" data-setbg="img/features/1.jpg">
-						<span class="cata new">Novo</span>
-						<div class="fi-content text-white">
-							<h5><a href="#">Alunos de ADS da FATEC Jundiaí criam sistema de front-end intuitivo para banco de tintas orgânicas.</a></h5>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
-							<a href="#" class="fi-comment">3 Comments</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6 p-0">
-					<div class="feature-item set-bg" data-setbg="img/features/2.jpg">
-						<span class="cata strategy">Estratégia</span>
-						<div class="fi-content text-white">
-							<h5><a href="#">Sustentabilidade e Tecnologia: Alunos da FATEC Criam Plataforma para Monitorar Impactos Ambientais de Empresas</a></h5>
-							<p>Sistema inovador rastreia emissões e sugere ações corretivas em tempo real. </p>
-							<a href="#" class="fi-comment">3 Comments</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6 p-0">
-					<div class="feature-item set-bg" data-setbg="img/features/3.jpg">
-						<span class="cata new">Novo</span>
-						<div class="fi-content text-white">
-							<h5><a href="#">ADS e GAM Unem Forças para Desenvolver Sistema de Gestão de Resíduos Urbanos Inteligente</a></h5>
-							<p>Solução tecnológica promete transformar a coleta seletiva em cidades brasileiras.
+        <!-- Sobre o Projeto -->
+        <section class="about">
+            <h2>Sobre o Projeto</h2>
+            <p>O Banco de Tintas é uma iniciativa que conecta doadores com beneficiários, promovendo a reutilização de tintas e
+                reduzindo desperdícios. Nosso objetivo é levar cor e vida para aqueles que mais precisam.</p>
+        </section>
 
-							</p>
-							<a href="#" class="fi-comment">3 Comments</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6 p-0">
-					<div class="feature-item set-bg" data-setbg="img/features/4.jpg">
-						<span class="cata racing">Atualização</span>
-						<div class="fi-content text-white">
-							<h5><a href="#">Projeto Interdisciplinar entre ADS e GAM Implementa Rede de Sensores para Monitorar Recursos Hídricos/a></h5>
-							<p>Iniciativa pioneira permite análise em tempo real da qualidade da água.
-
-							</p>
-							<a href="#" class="fi-comment">3 Comments</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Feature section end -->
+        <!-- Como Funciona? -->
+        <section class="how-it-works">
+            <h2>Como Funciona?</h2>
+            <div class="steps">
+                <div class="step">
+                    <h3>1. Cadastre-se</h3>
+                    <p>Crie uma conta para doar ou solicitar tintas.</p>
+                </div>
+                <div class="step">
+                    <h3>2. Faça uma Doação</h3>
+                    <p>Disponibilize suas tintas para beneficiar outras pessoas ou organizações.</p>
+                </div>
+                <div class="step">
+                    <h3>3. Solicite Tintas</h3>
+                    <p>Seja um beneficiário e solicite tintas disponíveis no sistema.</p>
+                </div>
+            </div>
+        </section>
 
 
-	
-	<!-- Review section -->
-	<section class="review-section spad set-bg" data-setbg="">
-		<div class="container">
-			<div class="section-title">
-				<div class="cata new">Novo</div>
-				<h2>Avaliações Recentes</h2>
-			</div>
-			<div class="row">
-				<div class="col-lg-3 col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/1.jpg">
-							<div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h5>Acaralate 2E</h5>
-							<p>Embora não seja focada em sustentabilidade, esta linha da Duramax é ideal para áreas que exigem durabilidade e resistência</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/2.jpg">
-							<div class="score purple">9.5</div>
-						</div>
-						<div class="review-text">
-							<h5>Diazinon 4E</h5>
-							<p>Tinta de alta performance, projetada para durar muito mais tempo sem necessidade de manutenção constante. </p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/3.jpg">
-							<div class="score green">9.1</div>
-						</div>
-						<div class="review-text">
-							<h5>Acaralate</h5>
-							<p>Esta tinta é composta por componentes orgânicos biodegradáveis, sem solventes tóxicos, tornando-a segura tanto para o meio ambiente quanto para os usuários</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/4.jpg">
-							<div class="score pink">9.7</div>
-						</div>
-						<div class="review-text">
-							<h5>Diazinon 4E</h5>
-							<p>Diazinon é uma tinta inovadora e sustentável, desenvolvida para oferecer alta performance com baixo impacto ambiental.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Review section end -->
 
+    </main>
 
-	<!-- Footer top section -->
-	<section class="footer-top-section">
-		<div class="container">
-			<div class="footer-top-bg">
-				
-			</div>
-			<div class="row">
-				<div class="col-lg-4">
-					<div class="footer-logo text-white">
-						<img src="img/logo.png" alt="">
-						<!--<p>Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame.</p>-->
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-6">
-					<div class="footer-widget mb-5 mb-md-0">
-						<h4 class="fw-title">Últimas Postagens</h4>
-						<div class="latest-blog">
-							<div class="lb-item">
-								<div class="lb-thumb set-bg" data-setbg="img/latest-blog/1.jpg"></div>
-								<div class="lb-content">
-									<div class="lb-date">17 de Novembro de 2024</div>
-									<p>Projeto inovador de tintas orgânicas promete transformar a indústria com soluções sustentáveis.
+    <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="container">
+            <ul class="footer-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="review.html">Banco de Tintas</a></li>
+                <li><a href="contact.html">Contato</a></li>
+            </ul>
+            <p class="copyright">
+                Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos os direitos reservados | Este template foi feito por <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+            </p>
+        </div>
+    </footer>
 
-									</p>
-									<a href="#" class="lb-author">Por Admin</a>
-								</div>
-							</div>
-							<div class="lb-item">
-								<div class="lb-thumb set-bg" data-setbg="img/latest-blog/2.jpg"></div>
-								<div class="lb-content">
-									<div class="lb-date">16 de Setembro de 2024</div>
-									<p>Tintas orgânicas ganham destaque com novos avanços em produção ecológica e funcional</p>
-									<a href="#" class="lb-author">Por Admin</a>
-								</div>
-							</div>
-							<div class="lb-item">
-								<div class="lb-thumb set-bg" data-setbg="img/latest-blog/3.jpg"></div>
-								<div class="lb-content">
-									<div class="lb-date">04 de Julho de 2024</div>
-									<p>FATEC Jundiaí prepara alunos para o futuro com projetos que unem inovação, tecnologia e sustentabilidade.</p>
-									<a href="#" class="lb-author">By Admin</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-6">
-					<div class="footer-widget">
-						<h4 class="fw-title">Comentários Principais</h4>
-						<div class="top-comment">
-							<div class="tc-item">
-								<div class="tc-thumb set-bg" data-setbg="img/authors/1.jpg"></div>
-								<div class="tc-content">
-									<p><a href="#">Rodrigo Cardoso</a> <span>on</span> Belíssima iniciativa dos alunos da FATEC!</p>
-									<div class="tc-date">01 de Novembro de 2024</div>
-								</div>
-							</div>
-							<div class="tc-item">
-								<div class="tc-thumb set-bg" data-setbg="img/authors/2.jpg"></div>
-								<div class="tc-content">
-									<p><a href="#">Alexandro Magnusson</a> <span>on</span>  Este projeto tem futuro, assim como os alunos envolvidos nele./p>
-									<div class="tc-date">04 de Novembro de 2024</div>
-								</div>
-							</div>
-							<div class="tc-item">
-								<div class="tc-thumb set-bg" data-setbg="img/authors/3.jpg"></div>
-								<div class="tc-content">
-									<p><a href="#">Luiz Ayuni</a> <span>on</span>  Imagine se todos os cursos da instituição se juntassem neste projeto...</p>
-									<div class="tc-date">05 de Agosto de 2024</div>
-								</div>
-							</div>
-							<div class="tc-item">
-								<div class="tc-thumb set-bg" data-setbg="img/authors/4.jpg"></div>
-								<div class="tc-content">
-									<p><a href="#">Geraldo Jenaro</a> <span>on</span>  👍</p>
-									<div class="tc-date">22 de Fevereiro de 2024</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Footer top section end -->
+    <!-- Scripts -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.marquee.min.js"></script>
+    <script src="js/main.js"></script>
 
-	
-	<!-- Footer section -->
-	<footer class="footer-section">
-		<div class="container">
-			<ul class="footer-menu">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="review.html">Banco de Tintas</a></li>
-				
-				
-				<li><a href="contact.html">Contato</a></li>
-			</ul>
-			<p class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> Todos os direitos reservados | Este template foi feito por <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-</p>
-		</div>
-	</footer>
-	<!-- Footer section end -->
+</body>
 
-
-	<!--====== Javascripts & Jquery ======-->
-	<script src="js/jquery-3.2.1.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.marquee.min.js"></script>
-	<script src="js/main.js"></script>
-    </body>
 </html>
-
