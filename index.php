@@ -4,8 +4,6 @@ if (isset($_SESSION['success_message'])) {
     echo '<p style="color: green;">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
     unset($_SESSION['success_message']);
 }
-
-include './templates/header.php'; // Incluindo o cabeçalho
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +36,9 @@ include './templates/header.php'; // Incluindo o cabeçalho
 </head>
 
 <body>
+
+    <?php include './templates/header.php'; ?>  <!-- Incluindo o cabeçalho -->
+
     <!-- Page Preloader -->
     <div id="preloder">
         <div class="loader"></div>
