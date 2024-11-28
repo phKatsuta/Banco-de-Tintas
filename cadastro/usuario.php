@@ -14,6 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recebe e valida os dados do formulário
     $nome = trim($_POST["usuario_nome"]);
     $cep = trim($_POST["usuario_cep"]);
+    // Campos marcados como readonly precisam ter valores definidos antes de serem enviados. Para garantir que sejam enviados mesmo quando o preenchimento automático falhar:
     $endereco = trim($_POST["usuario_endereco"] ?? ""); // readonly
     $endereco_num = trim($_POST["usuario_endereco_num"]);
     $endereco_complemento = trim($_POST["usuario_endereco_complemento"]);
@@ -90,19 +91,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Exibe erros ou sucesso -->
 <?php if (!empty($errors)): ?>
-    <div style="color: red;">
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li><?php echo htmlspecialchars($error); ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
+    <ul>
+        <?php foreach ($errors as $error): ?>
+            <li><?php echo htmlspecialchars($error); ?></li>
+        <?php endforeach; ?>
+    </ul>
 <?php endif; ?>
 
 <?php if ($success): ?>
-    <div style="color: green;">
-        <?php echo htmlspecialchars($success); ?>
-    </div>
+    <p><?php echo htmlspecialchars($success); ?></p>
     <script>
         // Redireciona para index.php após 3 segundos
         setTimeout(function () {
@@ -110,110 +107,97 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }, 3000); // 3000 milissegundos = 3 segundos
     </script>
 <?php endif; ?>
-<?php include '../templates/header.php' ?>
-    <h1>Cadastro - Banco de Tintas</h1>
-    <section class="registration-form">
-        <div class="container">
-            <h2>Cadastro de Usuário</h2>
-            <form method="POST" action="" id="form">
-                <!-- Inputs do Formulário -->
-                <div class="form-group">
-                    <label for="usuario_nome">Nome:</label>
-                    <input type="text" name="usuario_nome" id="usuario_nome" required class="form-control">
-                </div>
 
-                <div class="form-group">
-                    <label for="cep">CEP:</label>
-                    <input type="text" name="usuario_cep" id="cep" oninput="aplicarMascaraCEP(this)" placeholder="Digite o CEP" class="form-control">
-                    <button type="button" id="buscarCep" class="btn-primary">Buscar CEP</button>
-                    <div id="loading-indicator" style="display: none;">Carregando...</div>
-                </div>
+<!-- Página de cadastro com estilo do formulário -->
+<section class="registration-form">
+    <div class="container">
+        <h2>Cadastro de Usuário</h2>
+        <form action="" method="POST">
+            <div class="form-group">
+                <label for="usuario_nome">Nome Completo:</label>
+                <input type="text" id="usuario_nome" name="usuario_nome" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="usuario_email">E-mail:</label>
+                <input type="email" id="usuario_email" name="usuario_email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="confirma_senha">Confirme a Senha:</label>
+                <input type="password" id="confirma_senha" name="confirma_senha" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="usuario_cep">CEP:</label>
+                <input type="text" id="usuario_cep" name="usuario_cep" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="usuario_endereco">Endereço:</label>
+                <input type="text" id="usuario_endereco" name="usuario_endereco" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="usuario_endereco_num">Número:</label>
+                <input type="text" id="usuario_endereco_num" name="usuario_endereco_num" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="usuario_endereco_complemento">Complemento:</label>
+                <input type="text" id="usuario_endereco_complemento" name="usuario_endereco_complemento" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="usuario_bairro">Bairro:</label>
+                <input type="text" id="usuario_bairro" name="usuario_bairro" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="usuario_cidade">Cidade:</label>
+                <input type="text" id="usuario_cidade" name="usuario_cidade" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="usuario_estado">Estado (UF):</label>
+                <input type="text" id="usuario_estado" name="usuario_estado" class="form-control" maxlength="2" readonly>
+            </div>
+            <div class="form-group">
+                <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
+                <input type="text" id="usuario_documento" name="usuario_documento" class="form-control" maxlength="18">
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" class="form-control" maxlength="15">
+            </div>
+            <div class="form-group">
+                <label for="eh_empresa">É uma organização?</label>
+                <select id="eh_empresa" name="eh_empresa" class="form-control">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                </select>
+            </div>
+            <div class="form-group" id="organizacao_fields" style="display: none;">
+                <label for="tipo_organizacao">Tipo de Organização:</label>
+                <input type="text" id="tipo_organizacao" name="tipo_organizacao" class="form-control">
+                <label for="area_atuacao">Área de Atuação:</label>
+                <input type="text" id="area_atuacao" name="area_atuacao" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="tipos">O que deseja?</label>
+                <select id="tipos" name="tipos[]" class="form-control" multiple>
+                    <option value="doar">Doar</option>
+                    <option value="receber">Receber</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
+    </div>
+</section>
 
-                <div class="form-group">
-                    <label for="usuario_endereco">Endereço:</label>
-                    <input type="text" name="usuario_endereco" id="usuario_endereco" readonly class="form-control">
-                </div>
+<script>
+    document.getElementById("eh_empresa").addEventListener("change", function() {
+        const organizacaoFields = document.getElementById("organizacao_fields");
+        if (this.value == "1") {
+            organizacaoFields.style.display = "block";
+        } else {
+            organizacaoFields.style.display = "none";
+        }
+    });
+</script>
 
-                <div class="form-group">
-                    <label for="endereco_num">Número:</label>
-                    <input type="text" name="usuario_endereco_num" id="endereco_num" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="endereco_complemento">Complemento:</label>
-                    <input type="text" name="usuario_endereco_complemento" id="endereco_complemento" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="bairro">Bairro:</label>
-                    <input type="text" id="usuario_bairro" readonly class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="cidade">Cidade:</label>
-                    <input type="text" id="usuario_cidade" readonly class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="estado">Estado:</label>
-                    <input type="text" id="usuario_estado" readonly class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="usuario_email">E-mail:</label>
-                    <input type="email" name="usuario_email" id="usuario_email" required class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" name="senha" id="senha" required class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="confirma_senha">Confirme a Senha:</label>
-                    <input type="password" name="confirma_senha" id="confirma_senha" required class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
-                    <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)" maxlength="18" placeholder="Digite CPF ou CNPJ" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="eh_empresa">É uma organização?</label>
-                    <input type="checkbox" name="eh_empresa" id="eh_empresa" value="1" onchange="toggleOrganizacao(this)">
-                </div>
-
-                <div id="organizacao_fields" style="display: none;">
-                    <div class="form-group">
-                        <label for="tipo_organizacao">Tipo de Organização:</label>
-                        <input type="text" name="tipo_organizacao" id="tipo_organizacao" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="area_atuacao">Área de Atuação:</label>
-                        <input type="text" name="area_atuacao" id="area_atuacao" class="form-control">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="tipos">Tipos de Usuário:</label>
-                    <div>
-                        <input type="checkbox" name="tipos[]" value="doar"> Doar
-                        <input type="checkbox" name="tipos[]" value="receber"> Receber
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
-                </div>
-            </form>
-        </div>
-    </section>
-    <script src="scripts/mascaras.js"></script>
-<?php include '../templates/footer.php' ?>
