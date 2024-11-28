@@ -1,7 +1,7 @@
 <?php
 // Incluir arquivos de configuração e sessões
 if (isset($_SESSION['success_message'])) {
-    echo '<p style="color: green;">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
+    echo '<p class="success-message">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
     unset($_SESSION['success_message']);
 }
 ?>
@@ -28,10 +28,7 @@ if (isset($_SESSION['success_message'])) {
     <link rel="stylesheet" href="css/owl.carousel.css"/>
     <link rel="stylesheet" href="css/animate.css"/>
     <link rel="stylesheet" href="css/style.css"/>
-
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./CSS/styles.css">
-    <link rel="stylesheet" href="./CSS/styles_menu.css">
+    <link rel="stylesheet" href="css/index.css"/>
 
 </head>
 
@@ -40,7 +37,7 @@ if (isset($_SESSION['success_message'])) {
     <?php include './templates/header.php'; ?>  <!-- Incluindo o cabeçalho -->
 
     <!-- Page Preloader -->
-    <div id="preloder">
+    <div id="preloder" class="preloader">
         <div class="loader"></div>
     </div>
 
@@ -48,7 +45,7 @@ if (isset($_SESSION['success_message'])) {
     <main class="container">
         <!-- Exibe mensagem de erro no login -->
         <?php if (!empty($error)): ?>
-            <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+            <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
 
         <!-- Exibe o menu dinâmico se o usuário estiver logado -->

@@ -7,7 +7,7 @@ body {
     padding: 0;
 }
 
-/* Estilo para a seção principal (interface para visitantes) */
+/* Seção Principal */
 .hero {
     text-align: center;
     padding: 50px;
@@ -30,6 +30,9 @@ body {
 .user-menu ul, .perfil-menu ul {
     list-style-type: none;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .user-menu li, .perfil-menu li {
@@ -48,8 +51,20 @@ body {
     padding-left: 10px;
 }
 
-.logout-form {
-    margin-top: 20px;
+/* Responsividade */
+@media (max-width: 768px) {
+    .hero {
+        padding: 30px;
+    }
+
+    .user-menu, .perfil-menu {
+        padding: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 15px;
+    }
 }
 
 .logout-btn {

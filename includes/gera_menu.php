@@ -54,92 +54,17 @@ if (!function_exists('gerarMenuPrincipal')) {
         // Menu para Beneficiário
         if (in_array('Beneficiario', $tipos_usuario)) {
             echo '<li><a href="' . BASE_URL . 'solicitacao/minhas_solicitacoes.php">Minhas Solicitações</a></li>';
-            echo '<li><a href="' . BASE_URL . 'solicitacao/solicitacao.php">Solicitar Tintas</a></li>';
+            echo '<li><a href="' . BASE_URL . 'solicitacao/solicitacao.php">Solicitar Tinta</a></li>';
         }
 
-        // Menu para Gestor
-        if (in_array('Gestor', $tipos_usuario)) {
-            echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Confirmar Doações</a></li>';
-            echo '<li><a href="' . BASE_URL . 'gestao/analisar_solicitacao.php">Analisar Solicitações</a></li>';
-            echo '<li><a href="' . BASE_URL . 'gestao/mistura_tintas.php">Misturar Tintas</a></li>';
-        }
-
-        // Menu para Monitor
-        if (in_array('Monitor', $tipos_usuario)) {
-            echo '<li><a href="' . BASE_URL . 'gestao/recebimento.php">Analisar Doações</a></li>';
-            echo '<li><a href="' . BASE_URL . 'gestao/monitores.php">Monitoramento</a></li>';
-        }
-
-        echo '</ul>';
-        echo '<form method="POST" action="' . BASE_URL . 'logout.php" class="logout-form">';
-        echo '<button type="submit" class="btn logout-btn">Sair</button>';
-        echo '</form>';
-        echo '</nav>';
-    }
-}
-
-// Função para gerar o menu de perfil
-if (!function_exists('gerarMenuPerfil')) {
-    function gerarMenuPerfil()
-    {
-        echo '<nav class="perfil-menu">';
-        echo '<h3>Menu de Perfil</h3>';
-        echo '<ul>';
-        echo '<li><a href="' . BASE_URL . 'perfil/editar_perfil.php">Editar Perfil</a></li>';
-        echo '<li><a href="' . BASE_URL . 'perfil/alterar_senha.php">Alterar senha</a></li>';
-        echo '<li><a href="' . BASE_URL . 'perfil/excluir_conta.php">Excluir Conta</a></li>';
+        echo '<li><a href="' . BASE_URL . 'perfil.php">Meu Perfil</a></li>';
+        echo '<li><a href="' . BASE_URL . 'logout.php" class="logout-btn">Sair</a></li>';
         echo '</ul>';
         echo '</nav>';
     }
 }
+
+$tipos_usuario = getUserTypes($pdo, $_SESSION['user_id']);
+$usuario_nome = getUserById($pdo, $_SESSION['user_id']);
+gerarMenuPrincipal($tipos_usuario, $usuario_nome);
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco de Tintas</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>../css/index.css"> <!-- Referência ao CSS -->
-</head>
-<body>
-
-<?php
-// Controle de interface para o usuário logado
-if (isset($_SESSION['usuario_id'])) {
-    $usuario_id = $_SESSION['usuario_id'];
-    $tipos_usuario = getUserTypes($pdo, $usuario_id); // Verificação dos tipos diretamente no banco
-    $usuario_nome = getUserById($pdo, $usuario_id) ?? 'Usuário';
-
-    // Exibe o menu principal
-    gerarMenuPrincipal($tipos_usuario, $usuario_nome);
-
-    // Exibe o menu de perfil
-    gerarMenuPerfil();
-
-    // Verifica a ação solicitada
-    if (isset($_GET['acao'])) {
-        if ($_GET['acao'] == 'editar') {
-            include 'editar_perfil.php';
-        } elseif ($_GET['acao'] == 'adicionar_permissao') {
-            include 'adicionar_permissao.php';
-        } elseif ($_GET['acao'] == 'alterar_para_organizacao') {
-            include 'alterar_para_organizacao.php';
-        } elseif ($_GET['acao'] == 'excluir_conta') {
-            include 'excluir_conta.php';
-        }
-    }
-
-} else {
-    // Interface padrão para visitantes
-    echo '<section class="hero">';
-    echo '<h1>Bem-vindo ao Banco de Tintas</h1>';
-    echo '<p>Transforme vidas com cores! Doe tintas que você não usa mais ou solicite tintas para suas necessidades.</p>';
-    echo '<a href="' . BASE_URL . 'cadastro/usuario.php" class="btn">Cadastrar</a>';
-    echo '<button class="btn" onclick="openModal()">Acessar</button>';
-    echo '</section>';
-}
-?>
-
-</body>
-</html>
