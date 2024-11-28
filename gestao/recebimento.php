@@ -1,5 +1,12 @@
 <?php
-require_once '../includes/verifica_monitor.php';
+require_once '../includes/verifica_gestor.php';
+
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Buscar doações pendentes de confirmação
 $stmt = $pdo->query("
     SELECT 

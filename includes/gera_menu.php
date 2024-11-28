@@ -4,7 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
 // Função para obter os tipos de usuário diretamente do banco
 if (!function_exists('getUserTypes')) {
     function getUserTypes($pdo, $usuario_id)
@@ -118,19 +117,6 @@ if (isset($_SESSION['usuario_id'])) {
 
     // Exibe o menu de perfil
     gerarMenuPerfil();
-
-    // Verifica a ação solicitada
-    if (isset($_GET['acao'])) {
-        if ($_GET['acao'] == 'editar') {
-            include 'editar_perfil.php';
-        } elseif ($_GET['acao'] == 'adicionar_permissao') {
-            include 'adicionar_permissao.php';
-        } elseif ($_GET['acao'] == 'alterar_para_organizacao') {
-            include 'alterar_para_organizacao.php';
-        } elseif ($_GET['acao'] == 'excluir_conta') {
-            include 'excluir_conta.php';
-        }
-    }
 
 } else {
     // Interface padrão para visitantes

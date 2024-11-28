@@ -1,6 +1,12 @@
 <?php
 require_once '../includes/verifica_gestor.php';
 
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Verificar se o botão de confirmação foi pressionado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obter id_monitor
