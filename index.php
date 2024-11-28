@@ -18,6 +18,11 @@ include './templates/header.php';
     <link rel="stylesheet" href="./CSS/index.css">
     <link rel="stylesheet" href="./CSS/styles_menu.css">
     <title>Banco de Tintas</title>
+    <style>
+        body{
+            background-color: blue;
+        }
+    </style>
 </head>
 
 <body>
