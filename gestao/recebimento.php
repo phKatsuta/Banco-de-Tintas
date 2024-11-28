@@ -37,20 +37,20 @@ include '../templates/header.php';
 <?php if (empty($doacoes)): ?>
     <p>Não há doações pendentes de confirmação.</p>
 <?php else: ?>
+    <div class="doacoes-list">
+        <?php foreach ($doacoes as $id_doacao => $tintas): ?>
+            <?php $doacao_info = $tintas[0]; ?>
+            <div class="doacao">
+                <button type="button" class="doacao-toggle" onclick="toggleDoacao(<?php echo $id_doacao; ?>)">
+                    Doação em <?php echo date('d/m/Y', strtotime($doacao_info['data_doacao'])); ?> - Local:
+                    <?php echo htmlspecialchars($doacao_info['local_doado']); ?>
+                </button>
+                <div id="doacao-<?php echo $id_doacao; ?>" class="doacao-details" style="display: none;">
+                    <form method="POST" enctype="multipart/form-data" action="recebimento_submit.php">
+                        <!-- Campo oculto para id_monitor e id_doacao -->
+                        <input type="hidden" name="id_monitor" value="<?php echo $_SESSION['usuario_id']; ?>">
+                        <input type="hidden" name="id_doacao" value="<?php echo $id_doacao; ?>">
 
-    <form method="POST" enctype="multipart/form-data" action="recebimento_submit.php">
-        <!-- Campo oculto para id_monitor -->
-        <input type="hidden" name="id_monitor" value="<?php echo $_SESSION['usuario_id']; ?>">
-
-        <div class="doacoes-list">
-            <?php foreach ($doacoes as $id_doacao => $tintas): ?>
-                <?php $doacao_info = $tintas[0]; ?>
-                <div class="doacao">
-                    <button type="button" class="doacao-toggle" onclick="toggleDoacao(<?php echo $id_doacao; ?>)">
-                        Doação em <?php echo date('d/m/Y', strtotime($doacao_info['data_doacao'])); ?> - Local:
-                        <?php echo htmlspecialchars($doacao_info['local_doado']); ?>
-                    </button>
-                    <div id="doacao-<?php echo $id_doacao; ?>" class="doacao-details" style="display: none;">
                         <table border="1">
                             <thead>
                                 <tr>
@@ -81,16 +81,16 @@ include '../templates/header.php';
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
-                        <button type="submit" name="confirmar[<?php echo $id_doacao; ?>]" class="btn-confirm">
+                        <button type="submit" name="confirmar" class="btn-confirm">
                             Confirmar Recebimento
                         </button>
-                    </div>
+                    </form>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
-        <button id="toggleDropdowns" data-expanded="false" onclick="toggleAllDropdowns()">Exibir Todos</button>
-    </form>
+    <button id="toggleDropdowns" data-expanded="false" onclick="toggleAllDropdowns()">Exibir Todos</button>
 
     <script>
         function showColor(color, id) {

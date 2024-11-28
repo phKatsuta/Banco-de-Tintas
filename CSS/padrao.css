@@ -1,0 +1,13 @@
+html, body{
+    background-color: black;
+    color: antiquewhite;
+    font-family: verdana;
+    size: 24 px;
+}
+a{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: blanchedalmond;
+}
+a:visited{
+    color:cyan;
+}
