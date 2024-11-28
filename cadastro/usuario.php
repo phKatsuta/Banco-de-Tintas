@@ -1,35 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Banco de Tintas Orgânicas">
-    <meta name="keywords" content="banco de tintas, sustentabilidade, FATEC Jundiaí">
-    <title>Banco de Tintas</title>
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="shortcut icon"/>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="../css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="../css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="../css/owl.carousel.css"/>
-    <link rel="stylesheet" href="../css/animate.css"/>
-    <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/index.css"/>
-
-</head>
-
-<body>
 <?php
 require_once '../includes/gera_menu.php';
 include '../includes/via_cep.php';
 include '../includes/busca_cep.php';
 include '../includes/function_buscarEnderecoViaCep.php';
+// include '../includes/teste_via_cep.php'; // Teste de funcionalidade da API
 
 // Variáveis para armazenar mensagens de erro/sucesso
 $errors = [];
@@ -40,12 +14,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recebe e valida os dados do formulário
     $nome = trim($_POST["usuario_nome"]);
     $cep = trim($_POST["usuario_cep"]);
-    $endereco = trim($_POST["usuario_endereco"] ?? "");
+    // Campos marcados como readonly precisam ter valores definidos antes de serem enviados. Para garantir que sejam enviados mesmo quando o preenchimento automático falhar:
+    $endereco = trim($_POST["usuario_endereco"] ?? ""); // readonly
     $endereco_num = trim($_POST["usuario_endereco_num"]);
     $endereco_complemento = trim($_POST["usuario_endereco_complemento"]);
-    $bairro = trim($_POST["usuario_bairro"] ?? "");
-    $cidade = trim($_POST["usuario_cidade"] ?? "");
-    $estado = trim($_POST["usuario_estado"] ?? "");
+    $bairro = trim($_POST["usuario_bairro"] ?? ""); // readonly
+    $cidade = trim($_POST["usuario_cidade"] ?? ""); // readonly
+    $estado = trim($_POST["usuario_estado"] ?? ""); // readonly
     $email = trim($_POST["usuario_email"]);
     $senha = $_POST["senha"];
     $confirma_senha = $_POST["confirma_senha"];
@@ -114,223 +89,112 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<?php include '../templates/header.php'; ?>
-
-<style>
-    body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Header */
-    .header-section {
-        background-color: #222;
-        padding: 20px 0;
-    }
-
-    .site-logo img {
-        width: 150px;
-    }
-
-    .main-menu {
-        list-style: none;
-        padding: 0;
-        text-align: center;
-    }
-
-    .main-menu li {
-        display: inline;
-        margin: 0 15px;
-    }
-
-    .main-menu li a {
-        color: #fff;
-        font-size: 16px;
-        text-decoration: none;
-    }
-
-    /* Form Section */
-    .registration-form {
-        background-color: #fff;
-        padding: 30px;
-        max-width: 600px;
-        margin: 50px auto;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
-
-    .registration-form h2 {
-        font-size: 24px;
-        margin-bottom: 20px;
-        text-align: center;
-        color: #222;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        color: #333;
-        font-size: 14px;
-        font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-        background-color: #f9f9f9;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-        outline: none;
-        border-color: #222;
-        background-color: #fff;
-    }
-
-    .btn-primary {
-        background-color: #222;
-        color: #fff;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        width: 100%;
-    }
-
-    .btn-primary:hover {
-        background-color: #333;
-    }
-
-    /* Footer */
-    .footer-section {
-        background-color: #222;
-        color: #fff;
-        padding: 30px 0;
-        text-align: center;
-    }
-
-    .footer-menu {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 20px;
-    }
-
-    .footer-menu li {
-        display: inline;
-        margin: 0 15px;
-    }
-
-    .footer-menu li a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    .copyright {
-        font-size: 14px;
-        color: #fff;
-        margin-top: 20px;
-    }
-</style>
-
-<h1>Cadastro - Banco de Tintas</h1>
-
+<!-- Exibe erros ou sucesso -->
 <?php if (!empty($errors)): ?>
-    <div style="color: red;">
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php elseif (!empty($success)): ?>
-    <div style="color: green;">
-        <?= htmlspecialchars($success) ?>
-    </div>
-    <script>
-        setTimeout(function () {
-            window.location.href = '../index.php';
-        }, 3000);
-    </script>
+    <ul>
+        <?php foreach ($errors as $error): ?>
+            <li><?php echo htmlspecialchars($error); ?></li>
+        <?php endforeach; ?>
+    </ul>
 <?php endif; ?>
 
-<form method="POST" action="" id="form" style="max-width: 500px; margin: auto;">
-    <label for="usuario_nome">Nome:</label>
-    <input type="text" name="usuario_nome" id="usuario_nome" required><br>
+<?php if ($success): ?>
+    <p><?php echo htmlspecialchars($success); ?></p>
+    <script>
+        // Redireciona para index.php após 3 segundos
+        setTimeout(function () {
+            window.location.href = '../index.php';
+        }, 3000); // 3000 milissegundos = 3 segundos
+    </script>
+<?php endif; ?>
+<?php include '../templates/header.php' ?>
+<link rel="stylesheet" href="cadastro/usuario.css">
 
-    <label for="cep">CEP:</label>
-    <input type="text" name="usuario_cep" id="cep" oninput="aplicarMascaraCEP(this)" placeholder="Digite o CEP">
-    <button type="button" id="buscarCep">Buscar CEP</button>
-    <div id="loading-indicator" style="display: none;">Carregando...</div><br>
+    <h1>Cadastro - Banco de Tintas</h1>
+    <?php if (!empty($errors)): ?>
+        <div style="color: red;">
+            <ul>
+                <?php foreach ($errors as $error): ?>
+                    <li><?= htmlspecialchars($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php elseif (!empty($success)): ?>
+        <div style="color: green;">
+            <?= htmlspecialchars($success) ?>
+        </div>
+    <?php endif; ?>
 
-    <label for="usuario_endereco">Endereço:</label>
-    <input type="text" name="usuario_endereco" id="usuario_endereco" readonly>
+    <form method="POST" action="" id="form">
+        <label for="usuario_nome">Nome:</label>
+        <input type="text" name="usuario_nome" id="usuario_nome" required><br>
 
-    <label for="endereco_num">Número:</label>
-    <input type="text" name="usuario_endereco_num" id="endereco_num"><br>
+        <!--- Endereço --->
+        <label for="cep">CEP:</label>
+        <input type="text" name="usuario_cep" id="cep" oninput="aplicarMascaraCEP(this)" placeholder="Digite o CEP">
 
-    <label for="endereco_complemento">Complemento:</label>
-    <input type="text" name="usuario_endereco_complemento" id="endereco_complemento"><br>
+        <button type="button" id="buscarCep">Buscar CEP</button>
+        <div id="loading-indicator" style="display: none;">Carregando...</div><br>
 
-    <label for="bairro">Bairro:</label>
-    <input type="text" id="usuario_bairro" readonly><br>
+        <label for="usuario_endereco">Endereço:</label>
+        <input type="text" name="usuario_endereco" id="usuario_endereco" readonly>
 
-    <label for="cidade">Cidade:</label>
-    <input type="text" id="usuario_cidade" readonly><br>
+        <label for="endereco_num">Número:</label>
+        <input type="text" name="usuario_endereco_num" id="endereco_num"><br>
 
-    <label for="estado">Estado:</label>
-    <input type="text" id="usuario_estado" readonly><br>
+        <label for="endereco_complemento">Complemento:</label>
+        <input type="text" name="usuario_endereco_complemento" id="endereco_complemento"><br>
 
-    <label for="usuario_email">E-mail:</label>
-    <input type="email" name="usuario_email" id="usuario_email" required><br>
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="usuario_bairro" readonly><br>
 
-    <label for="senha">Senha:</label>
-    <input type="password" name="senha" id="senha" required><br>
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="usuario_cidade" readonly><br>
 
-    <label for="confirma_senha">Confirme a Senha:</label>
-    <input type="password" name="confirma_senha" id="confirma_senha" required><br>
+        <label for="estado">Estado:</label>
+        <input type="text" id="usuario_estado" readonly><br>
 
-    <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
-    <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)" maxlength="18"
-        placeholder="Digite CPF ou CNPJ">
-    <span id="usuario_documento_Error" style="color: red; display: none;">CPF ou CNPJ é obrigatório para organizações.</span><br>
+        <!--- Login --->
+        <label for="usuario_email">E-mail:</label>
+        <input type="email" name="usuario_email" id="usuario_email" required><br>
 
-    <label for="telefone">Telefone:</label>
-    <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX"><br>
+        <label for="senha">Senha:</label>
+        <input type="password" name="senha" id="senha" required><br>
 
-    <label for="eh_empresa">É uma organização?</label>
-    <input type="checkbox" name="eh_empresa" id="eh_empresa" value="1" onchange="toggleOrganizacao(this)"><br>
+        <label for="confirma_senha">Confirme a Senha:</label>
+        <input type="password" name="confirma_senha" id="confirma_senha" required><br>
 
-    <div id="organizacao_fields" style="display: none;">
-        <label for="tipo_organizacao">Tipo de Organização:</label>
-        <input type="text" name="tipo_organizacao" id="tipo_organizacao"><br>
+        <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
+        <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)" maxlength="18"
+            placeholder="Digite CPF ou CNPJ">
+        <span id=" usuario_documento_Error" style="color: red; display: none;">CPF ou CNPJ é obrigatório para
+        organizações.</span><br>
 
-        <label for="area_atuacao">Área de Atuação:</label>
-        <input type="text" name="area_atuacao" id="area_atuacao"><br>
-    </div>
+        <label for="telefone">Telefone:</label>
+        <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX"><br>
 
-    <label>Deseja:</label><br>
-    <input type="checkbox" name="tipos[]" value="Doador" id="doador">
-    <label for="doador">Doar tintas</label><br>
-    <input type="checkbox" name="tipos[]" value="Beneficiario" id="beneficiario">
-    <label for="beneficiario">Receber tintas</label><br>
+        <!--- Caso seja uma organização --->
+        <label for="eh_empresa">É uma organização?</label>
+        <input type="checkbox" name="eh_empresa" id="eh_empresa" value="1" onchange="toggleOrganizacao(this)"><br>
 
-    <button type="submit">Cadastrar</button>
-</form>
+        <div id="organizacao_fields" style="display: none;">
+            <label for="tipo_organizacao">Tipo de Organização:</label>
+            <input type="text" name="tipo_organizacao" id="tipo_organizacao"><br>
 
-<script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
-<script type="text/javascript" src="../SCRIPT/script.js"></script>
+            <label for="area_atuacao">Área de Atuação:</label>
+            <input type="text" name="area_atuacao" id="area_atuacao"><br>
+        </div>
 
-<?php include '../templates/footer.php'; ?>
+        <!--- Tipo de usuario --->
+        <label>Deseja:</label><br>
+        <input type="checkbox" name="tipos[]" value="Doador" id="doador">
+        <label for="doador">Doar tintas</label><br>
+        <input type="checkbox" name="tipos[]" value="Beneficiario" id="beneficiario">
+        <label for="beneficiario">Receber tintas</label><br>
 
-</body>
-<html>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
+    <script type="text/javascript" src="../SCRIPT/script.js"></script>
+    <?php include '../templates/footer.php'; ?>
