@@ -13,6 +13,7 @@ html,
 body {
   height: 100%;
   font-family: "Roboto", sans-serif;
+  color: #fbb710;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
 }

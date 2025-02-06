@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/gera_menu.php';
+
 include '../includes/via_cep.php';
 include '../includes/busca_cep.php';
 include '../includes/function_buscarEnderecoViaCep.php';
@@ -88,26 +89,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+<?php include '../templates/header.php'; ?>
+<main class="container">
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2>Acessar o Sistema</h2>
+            </div>
+            <form method="POST" action="../login.php" class="modal-form">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" placeholder="Digite seu email" required>
+                <label for="password">Senha:</label>
+                <input type="password" name="password" id="password" placeholder="Digite sua senha" required>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Lembrar-me</label>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+        </div>
+    </div>
+    <!-- Exibe erros ou sucesso -->
+    <?php if (!empty($errors)): ?>
+        <ul>
+            <?php foreach ($errors as $error): ?>
+                <li><?php echo htmlspecialchars($error); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 
-<!-- Exibe erros ou sucesso -->
-<?php if (!empty($errors)): ?>
-    <ul>
-        <?php foreach ($errors as $error): ?>
-            <li><?php echo htmlspecialchars($error); ?></li>
-        <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
+    <?php if ($success): ?>
+        <p><?php echo htmlspecialchars($success); ?></p>
+        <script>
+            // Redireciona para index.php após 3 segundos
+            setTimeout(function () {
+                window.location.href = '../index.php';
+            }, 3000); // 3000 milissegundos = 3 segundos
+        </script>
+    <?php endif; ?>
 
-<?php if ($success): ?>
-    <p><?php echo htmlspecialchars($success); ?></p>
-    <script>
-        // Redireciona para index.php após 3 segundos
-        setTimeout(function () {
-            window.location.href = '../index.php';
-        }, 3000); // 3000 milissegundos = 3 segundos
-    </script>
-<?php endif; ?>
-<?php include '../templates/header.php' ?>
     <h1>Cadastro - Banco de Tintas</h1>
     <?php if (!empty($errors)): ?>
         <div style="color: red;">
@@ -163,10 +185,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="password" name="confirma_senha" id="confirma_senha" required><br>
 
         <label for="usuario_documento">Documento (CPF ou CNPJ):</label>
-        <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)" maxlength="18"
-            placeholder="Digite CPF ou CNPJ">
+        <input type="text" name="usuario_documento" id="usuario_documento" oninput="mascaraDocumento(this)"
+            maxlength="18" placeholder="Digite CPF ou CNPJ">
         <span id=" usuario_documento_Error" style="color: red; display: none;">CPF ou CNPJ é obrigatório para
-        organizações.</span><br>
+            organizações.</span><br>
 
         <label for="telefone">Telefone:</label>
         <input type="text" id="telefone" name="telefone" maxlength="15" placeholder="(XX) XXXXX-XXXX"><br>
@@ -192,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Cadastrar</button>
     </form>
-
-    <script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
-    <script type="text/javascript" src="../SCRIPT/script.js"></script>
-    <?php include '../templates/footer.php'; ?>
+</main>
+<script type="text/javascript" src="../SCRIPT/script_cadastro.js"></script>
+<script type="text/javascript" src="../SCRIPT/script.js"></script>
+<?php include '../templates/footer.php'; ?>

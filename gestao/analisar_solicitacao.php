@@ -1,6 +1,12 @@
 <?php
 require_once '../includes/verifica_gestor.php';
 
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Consulta para obter as solicitações pendentes
 $stmt_pendentes = $pdo->prepare("
 SELECT 
